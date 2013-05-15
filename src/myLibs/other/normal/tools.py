@@ -30,10 +30,10 @@ def timer(func, count=1, every=1, *args, **kwargs):
     funcName = func.__name__
     runTimeGroup = []
     
-    for i in range(count):
+    for i in xrange(count):
         startTime = time.clock()
         
-        for j in range(every):
+        for j in xrange(every):
             apply(func, args, kwargs)
         endTime = time.clock()
         runTime = endTime-startTime

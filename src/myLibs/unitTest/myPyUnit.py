@@ -47,7 +47,7 @@ Like follows:
 
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from libs.unitTest import myUnitTemplate
+import myUnitTemplate
 import types
 
 ''' 

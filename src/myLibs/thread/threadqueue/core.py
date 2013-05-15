@@ -69,7 +69,7 @@ class Core(object):
         @return: an boolean type, means whether all the comannds run accurately.
         '''
         threads = []
-        for i in range(threadCount):
+        for i in xrange(threadCount):
             try:
                 thread = MyThread(self.commandQueue)
             except:
@@ -143,10 +143,10 @@ if __name__ == '__main__':
     test = t.Test()
     range10000 = t.range10000
     core = Core(100)
-    for i in range(50):
+    for i in xrange(50):
         core.build(methodObject=range10000, isLock=False, priority=3, str='aaa')
-    for j in range(10):
+    for j in xrange(10):
         core.build(methodObject=range10000, isLock=False, priority=2.5, str='bbb')
     core.run()
-    for k in range(10):
+    for k in xrange(10):
         core.build(methodObject=range10000, isLock=False, priority=2, str='cccccc')
