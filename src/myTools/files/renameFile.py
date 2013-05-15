@@ -1,0 +1,40 @@
+'''
+Created on 2013-3-21
+
+@author: lavenda
+'''
+
+#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+
+import os, shutil
+
+def renameFile(dirPath, fileSuffix, srcStr, targetStr):
+    '''
+    Rename all the files that it's suffix is 'fileSuffix' in the dirPath.
+    Replace the string from srcStr to targetStr.
+    
+    @param dirPath: the source directory path.
+    @type dirPath: string type
+    @param fileSuffix: the suffix of files, eg: .ma, .txt
+    @type fileSuffix: string type
+    @param srcStr: the original string which you want to replace.
+    @type srcStr: string type
+    @param targetStr: the target string that you want to 
+    @type targetStr: string type
+    
+    '''
+    for root, dirs, files in os.walk( dirPath ):
+        for file in files:
+            if not file.endswith(fileSuffix):
+                continue
+            filePath = os.path.join(root, file)
+            
+            suitableFile = file.replace(srcStr, targetStr)
+            fileSuitableFilePath = os.path.join(root, suitableFile)
+            
+            shutil.move(filePath, fileSuitableFilePath)
+
+
+if __name__ == '__main__':
+    pass
