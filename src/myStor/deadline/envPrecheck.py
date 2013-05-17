@@ -8,13 +8,13 @@ Created on 2013-5-13
 # -*- coding:utf-8 -*-
 
 import os, hashlib
-from tools.deadline import fileOper
+import fileOper
 import ctypes
 from ctypes.wintypes import MAX_PATH
 
 class EnvPrecheck(object):
     
-    SERVER = ['//server-cgi/project']
+    SERVER = ['//server-cgi/project'] 
     MAYA_ENV_FILE = ['//server-cgi/workflowtools_ep20/Install/Maya.env']
     SHAVENODE_FILE = ['C:/Program Files/JoeAlter/shaveHaircut/maya2012/plug-ins/shaveNode.mll']
     SOURCEIMAGE_FOLDER = ['//server-cgi/Project/E020DW/DWep20/sourceimages']
@@ -65,11 +65,11 @@ class EnvPrecheck(object):
     
     def checkMayaFile(self, mayaFile):
         '''
-        check whether the maya file is readable.
+        check whether the maya file is readable. 
         '''
         mayaFileName = os.path.basename(mayaFile)
         if not self._checkMayaFile(mayaFile):
-            print '<%s>MayaFileError'%mayaFileName
+            print '<%s>MayaFileError' % mayaFileName
 #            return 'MayaFileError'
             return False
     
@@ -108,7 +108,7 @@ class EnvPrecheck(object):
         serverMayaEnvStream = open(mayaEnvFile, 'r')
         myMayaEnvStream = open(myMayaEnvFile, 'r')
         try:
-            for server, local in zip(serverMayaEnvStream,myMayaEnvStream):
+            for server, local in zip(serverMayaEnvStream, myMayaEnvStream):
                 serverMD5 = hashlib.md5(server).digest()
                 localMD5 = hashlib.md5(local).digest()
                 if not (serverMD5 == localMD5):
@@ -161,7 +161,7 @@ class EnvPrecheck(object):
         '''
         check whether the maya file is readable.
         '''
-        return fileOper.isExistAndOpen(mayaFile)
+        return fileOper.isExistAndOpen(mayaFile) 
     
     
     def _checkPluginFolderOnServer(self):

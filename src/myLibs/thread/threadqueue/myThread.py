@@ -28,7 +28,29 @@ class MyThread(Thread):
         self.commandQueue = commandQueue
     
     
-    def _getDetailFromCommand(self, command):
+    def run(self):
+        '''
+        This method is overwritting the Thread's run() method.
+        It has a special pattern to process the method need to run whether want to lock.
+        Use the apply() method to run the goal method.
+        
+        '''
+        count = 0
+        while(True):
+            count += 1
+            command = self.__getCommandFromQueue()
+            self.__getDetailFromCommand(command)
+            if not command:
+                break
+            if self.__lock:
+                if self.__lock.acquire():
+                    apply(self.__target, self.__args, self.__kwargs)
+                    self.__lock.release()
+            else:
+                apply(self.__target, self.__args, self.__kwargs)
+    
+    
+    def __getDetailFromCommand(self, command):
         '''
         Unpack the MyCommand object, 
         and get some attribute that is useful from it
@@ -42,31 +64,9 @@ class MyThread(Thread):
             self.__target = command.methodObject
             self.__args = command.args
             self.__kwargs = command.kwargs
+
     
-    
-    def run(self):
-        '''
-        This method is overwritting the Thread's run() method.
-        It has a special pattern to process the method need to run whether want to lock.
-        Use the apply() method to run the goal method.
-        
-        '''
-        count = 0
-        while(True):
-            count += 1
-            command = self._getCommandFromQueue()
-            self._getDetailFromCommand(command)
-            if not command:
-                break
-            if self.__lock:
-                if self.__lock.acquire():
-                    apply(self.__target, self.__args, self.__kwargs)
-                    self.__lock.release()
-            else:
-                apply(self.__target, self.__args, self.__kwargs)
-    
-    
-    def _getCommandFromQueue(self):
+    def __getCommandFromQueue(self):
         '''
         This method is used to get a command from myComandQueue one by one.
         It's used temproarily before we find a new way to solve the dependency relationship.

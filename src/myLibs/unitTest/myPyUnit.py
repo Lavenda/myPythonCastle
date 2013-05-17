@@ -57,7 +57,7 @@ import types
 unitGlobals = {}
 
 
-def _addGlobals(func, result, args, kwargs):
+def __addGlobals(func, result, args, kwargs):
     '''
     Add the data of func to the globals().
     
@@ -79,7 +79,7 @@ def _addGlobals(func, result, args, kwargs):
     unitGlobals['kwargs_'+funcName] = kwargs
 
 
-def _buildUnit(func, result, args, kwargs):
+def __buildUnit(func, result, args, kwargs):
     '''
     Build a unit by a unit template from string in myUnitTemplate.
     
@@ -96,11 +96,11 @@ def _buildUnit(func, result, args, kwargs):
     if isinstance(result, types.StringType):
         result = "'%s'" % result
     myUnitTemplate.buildMethod(func, result, args, kwargs)
-    _addGlobals(func, result, args, kwargs)
+    __addGlobals(func, result, args, kwargs)
     
     
     
-def _testUnit():
+def __testUnit():
     '''
     Run all the unit tests, when all has been built.
     
@@ -110,7 +110,7 @@ def _testUnit():
     exec classStr in unitGlobals
 
 
-def _classRun(className, classType):
+def __classRun(className, classType):
     '''
     Get all the method which want to be test in '__main__' class,
     and build it into the template.
@@ -135,7 +135,7 @@ def _classRun(className, classType):
             funcObject(instance)
 
 
-def _functionRun(funcName, funcObject):
+def __functionRun(funcName, funcObject):
     '''
     Get all the function which want to be test in '__main__' module,
     and build it into the template.
@@ -165,11 +165,11 @@ def run(testGlobals):
     unitGlobals = testGlobals
     for name, element in  unitGlobals.items():
         if isinstance(element, types.TypeType):
-            _classRun(name, element)
+            __classRun(name, element)
         if isinstance(element, types.FunctionType):
-            _functionRun(name, element)
+            __functionRun(name, element)
     
-    _testUnit()
+    __testUnit()
     
     
 def myTest(result=None, *args, **kwargs):
@@ -185,7 +185,7 @@ def myTest(result=None, *args, **kwargs):
         def __myTest(self=None):
             if self:
                 kwargs['self'] = self
-            _buildUnit(func, result, args, kwargs)
+            __buildUnit(func, result, args, kwargs)
         return __myTest
     
     return _myTest

@@ -51,7 +51,7 @@ class Core(object):
         '''
         
         if isinstance(methodObject, types.MethodType) or isinstance(methodObject, types.FunctionType):
-            command = self._createCommand(methodObject, isLock, priority, args, kwargs)
+            command = self.__createCommand(methodObject, isLock, priority, args, kwargs)
             isPutSuccess = self.commandQueue.put(command)
         else:
             isPutSuccess = False
@@ -87,7 +87,7 @@ class Core(object):
         return True
     
     
-    def _createCommand(self, methodObject, isLock, priority, args, kwargs):
+    def __createCommand(self, methodObject, isLock, priority, args, kwargs):
         '''
         - A private method.
         This method is used to create a Command object.
@@ -107,7 +107,7 @@ class Core(object):
         '''
         command = MyCommand()
         if isLock:
-            lock = self._getLock(methodObject)
+            lock = self.__getLock(methodObject)
         else:
             lock = None
         command.setCommand(methodObject, lock, priority, args, kwargs)
@@ -115,7 +115,7 @@ class Core(object):
         return command
     
     
-    def _getLock(self, methodObject):
+    def __getLock(self, methodObject):
         '''
         - A private method.
         This method is used to get a Lock object when the method needs to be locked.
