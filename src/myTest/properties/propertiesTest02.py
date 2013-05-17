@@ -1,8 +1,8 @@
-'''
+"""
 Created on 2013-5-16
 
 @author: lavenda
-'''
+"""
 
 from myTest.properties.propertiesTest import Square
 
@@ -18,7 +18,7 @@ class SubSquare(Square):
         Square.__setPerimeter(self, perimeter)
     
     perimeter = property(__getPerimeter, __setPerimeter,
-                         doc = '''aaa''')
+                         doc = """aaa""")
     
 if __name__ == '__main__':
     ssq = SubSquare(3)

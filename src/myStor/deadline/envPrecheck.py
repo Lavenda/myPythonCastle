@@ -1,8 +1,8 @@
-'''
+"""
 Created on 2013-5-13
 
 @author: lavenda
-'''
+"""
 
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
@@ -27,7 +27,7 @@ class EnvPrecheck(object):
     
     
     def precheck(self):
-        '''
+        """
         Precheck the maya environment and maya file whether is right.
         There are six steps:
             1. check whether can connect the Server.
@@ -38,7 +38,7 @@ class EnvPrecheck(object):
         And a single step:
          - check whether the maya file is readable.
             
-        '''
+        """
 #        if not self._checkServer():
 #            print 'SdiskConnectError'
 ##            return 'SdiskConnectError'
@@ -64,9 +64,9 @@ class EnvPrecheck(object):
     
     
     def checkMayaFile(self, mayaFile):
-        '''
+        """
         check whether the maya file is readable. 
-        '''
+        """
         mayaFileName = os.path.basename(mayaFile)
         if not self._checkMayaFile(mayaFile):
             print '<%s>MayaFileError' % mayaFileName
@@ -76,17 +76,17 @@ class EnvPrecheck(object):
     
     
     def _checkServer(self):
-        '''
+        """
         check whether can connect the Server.
-        '''
+        """
         return self._isExistAndOpenInList(self.SERVER)
     
     
     def _isExistAndOpenInList(self, pathList):
-        '''
+        """
         Overwrite the isExistAndOpen function in fileOper.
         Now it is checking whether the path is readable.
-        '''
+        """
         for path in pathList:
             if fileOper.isExistAndOpen(path):
                 return path
@@ -94,9 +94,9 @@ class EnvPrecheck(object):
     
     
     def _checkMayaEnvFile(self):
-        '''
+        """
         check whether the maya env file is right.
-        '''
+        """
         userDocumentsPath = self._getUserDocuments()
         myMayaEnvFile = os.path.join(userDocumentsPath, 'maya', self.MAYA_VERSION, 'maya.env')
         if not fileOper.isExistAndOpen(myMayaEnvFile):
@@ -122,10 +122,10 @@ class EnvPrecheck(object):
     
     
     def _getUserDocuments(self):
-        '''
+        """
         get user's documents:
         Example: C:\Users\username\Documents
-        '''
+        """
         dll = ctypes.windll.shell32
         buf = ctypes.create_unicode_buffer(MAX_PATH + 1)
         if dll.SHGetSpecialFolderPathW(None, buf, 0x0005, False):
@@ -137,16 +137,16 @@ class EnvPrecheck(object):
     
     
     def _checkMayaShaveNodeFile(self):
-        '''
+        """
         check whether the ShaveNode.mll file is right.
-        '''
+        """
         return self._isExistAndOpenInList(self.SHAVENODE_FILE)
     
     
     def _checkSourceImagesOnServer(self):
-        '''
+        """
         check whether the texture files is readable.
-        '''
+        """
         sourceimagesFolder = self._isExistAndOpenInList(self.SOURCEIMAGE_FOLDER)
         if not sourceimagesFolder:
             return False
@@ -158,16 +158,16 @@ class EnvPrecheck(object):
     
     
     def _checkMayaFile(self, mayaFile):
-        '''
+        """
         check whether the maya file is readable.
-        '''
+        """
         return fileOper.isExistAndOpen(mayaFile) 
     
     
     def _checkPluginFolderOnServer(self):
-        '''
+        """
         check whether the plugin folder is readable.
-        '''
+        """
         return self._isExistAndOpenInList(self.PLUGIN_FOLDER)
 
 

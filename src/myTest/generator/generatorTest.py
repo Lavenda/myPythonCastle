@@ -1,8 +1,8 @@
-'''
+"""
 Created on 2013-5-15
 
 @author: lavenda
-'''
+"""
 
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-

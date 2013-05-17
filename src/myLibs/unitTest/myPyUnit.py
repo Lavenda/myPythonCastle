@@ -1,6 +1,6 @@
-'''
+"""
 Created on 2013-5-8
-
+ 
 @author: lavenda
 
 This module uses the unittest module and decorator to achieve fast unit test.
@@ -43,22 +43,21 @@ Like follows:
      If it is only a function, you can also use all the way, such as ({@myPyUnit.myTest(3,1,2)})
     2. It cannot be used to a class, and it is only for methods or functions.
     
-'''
+"""
 
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import myUnitTemplate
 import types
 
-''' 
+""" 
 - unitGlobals: the globals information of the test module.
-
-'''
+"""
 unitGlobals = {}
 
 
 def __addGlobals(func, result, args, kwargs):
-    '''
+    """
     Add the data of func to the globals().
     
     @param func: the function or method object.
@@ -70,7 +69,7 @@ def __addGlobals(func, result, args, kwargs):
     @param kwargs: the arguments of func
     @type kwargs: dictionary type
     
-    '''
+    """
     funcName = func.__name__.decode('utf-8')
     global unitGlobals
     unitGlobals[funcName] = func
@@ -80,7 +79,7 @@ def __addGlobals(func, result, args, kwargs):
 
 
 def __buildUnit(func, result, args, kwargs):
-    '''
+    """
     Build a unit by a unit template from string in myUnitTemplate.
     
     @param func: the function or method object.
@@ -92,7 +91,7 @@ def __buildUnit(func, result, args, kwargs):
     @param kwargs: the arguments of func
     @type kwargs: dictionary type
     
-    '''
+    """
     if isinstance(result, types.StringType):
         result = "'%s'" % result
     myUnitTemplate.buildMethod(func, result, args, kwargs)
@@ -101,17 +100,17 @@ def __buildUnit(func, result, args, kwargs):
     
     
 def __testUnit():
-    '''
+    """
     Run all the unit tests, when all has been built.
     
-    '''
+    """
     global unitGlobals
     classStr = myUnitTemplate.buildClass()
     exec classStr in unitGlobals
 
 
 def __classRun(className, classType):
-    '''
+    """
     Get all the method which want to be test in '__main__' class,
     and build it into the template.
     
@@ -120,7 +119,7 @@ def __classRun(className, classType):
     @param classType: a class element.
     @type classType: class type
     
-    '''
+    """
     funcGroup = classType.__dict__.items()
     instance = classType()
     if not '__main__' in str(classType):
@@ -136,7 +135,7 @@ def __classRun(className, classType):
 
 
 def __functionRun(funcName, funcObject):
-    '''
+    """
     Get all the function which want to be test in '__main__' module,
     and build it into the template.
     
@@ -145,7 +144,7 @@ def __functionRun(funcName, funcObject):
     @param classType: a function element.
     @type classType: function type
     
-    '''
+    """
     if funcName.startswith('__') and funcName.endswith('__'):
         return 
     innerFuncName = funcObject.__name__
@@ -154,13 +153,13 @@ def __functionRun(funcName, funcObject):
 
 
 def run(testGlobals):
-    '''
+    """
     This function is the switch of the unittest.
     
     @param testGlobals: the globals() environment of the module you want to test.
     @type testGlobals: the globals() dictionary.
     
-    '''
+    """
     global unitGlobals
     unitGlobals = testGlobals
     for name, element in  unitGlobals.items():
@@ -173,13 +172,13 @@ def run(testGlobals):
     
     
 def myTest(result=None, *args, **kwargs):
-    '''
+    """
     The decorator implementation class.
     
     @param result: the result of the function or the method you want to test.
     @type result: any type
     
-    '''
+    """
     def _myTest(func):
         
         def __myTest(self=None):

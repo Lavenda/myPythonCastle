@@ -1,19 +1,19 @@
-'''
+"""
 Created on 2013-5-3
 
 @author: huangchengqi
-'''
+"""
 from time import sleep
 class Test(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     num = 0
     def __init__(self):
-        '''
+        """
         Constructor
-        '''
+        """
         pass
     def range3(self):
         for i in range(3):

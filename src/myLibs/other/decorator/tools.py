@@ -1,13 +1,13 @@
-'''
+"""
 Created on 2013-5-6
 
 @author: lavenda
-'''
+"""
 
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 def timer(count=1, every=1):
-    '''
+    """
     This method is used to calculate time of the progarm you run.
     But this time is only to calculate the CPU time which your program has used.
     
@@ -25,7 +25,7 @@ def timer(count=1, every=1):
             def testTimer(a, b):
                 ....
         
-    '''
+    """
     import time
     def _timer(func):
         def __timer(*args, **kwargs):

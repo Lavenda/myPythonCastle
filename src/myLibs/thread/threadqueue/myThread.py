@@ -1,8 +1,8 @@
-'''
+"""
 Created on 2013-5-1
 
 @author: lavenda
-'''
+"""
 
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
@@ -10,31 +10,32 @@ from threading import Thread
 
 
 class MyThread(Thread):
-    '''
+    """
     Inherit from threading.Thread class, and make it more suitable to us.
     Right now, this class is a temporary version. There are many problems need to solve.
     This class depends MyCommandQueue class, which is very unreasonable, but it also can use now.
     
-    '''
+    """
     def __init__(self, commandQueue=None, group=None, name=None, verbose=None):
-        '''
+        """
         @param commendQueue: the MyCommandQueue object.
         @type commandQueue: MyCommandQueue object
         
         @note: other attributes are not used temporarily.
         
-        '''
+        """
         Thread.__init__(self, group=group, name=name, verbose=verbose)
         self.commandQueue = commandQueue
+        self.__lock = None
     
     
     def run(self):
-        '''
+        """
         This method is overwritting the Thread's run() method.
         It has a special pattern to process the method need to run whether want to lock.
         Use the apply() method to run the goal method.
         
-        '''
+        """
         count = 0
         while(True):
             count += 1
@@ -51,14 +52,14 @@ class MyThread(Thread):
     
     
     def __getDetailFromCommand(self, command):
-        '''
+        """
         Unpack the MyCommand object, 
         and get some attribute that is useful from it
         
         @param command: an object of MyCommand 
         @type command: MyCommand object
         
-        '''
+        """
         if command:
             self.__lock = command.lock
             self.__target = command.methodObject
@@ -67,18 +68,18 @@ class MyThread(Thread):
 
     
     def __getCommandFromQueue(self):
-        '''
+        """
         This method is used to get a command from myComandQueue one by one.
         It's used temproarily before we find a new way to solve the dependency relationship.
         
-        '''
+        """
         command = self.commandQueue.get()
         
         return command
     
     
     
-'''
+"""
 #just test:
 from myCommand import MyCommand
 from threading import Lock
@@ -97,4 +98,4 @@ if __name__ == '__main__':
     myThread1 =  MyThread(command=command)
     myThread.start()
     myThread1.start()
-'''
+"""

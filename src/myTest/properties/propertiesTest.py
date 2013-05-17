@@ -1,8 +1,8 @@
-'''
+"""
 Created on 2013-5-16
 
 @author: lavenda
-'''
+"""
 
 
 import math
@@ -54,7 +54,7 @@ class Square(object):
     
     
     perimeter = property(__getPerimeter, __setPerimeter,
-                          doc = '''Get or sets the prerimeter of the square''')
+                          doc = """Get or sets the prerimeter of the square""")
 
     @property
     def diagonal(self):

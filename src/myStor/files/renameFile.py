@@ -1,8 +1,8 @@
-'''
+"""
 Created on 2013-3-21
 
 @author: lavenda
-'''
+"""
 
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
@@ -10,7 +10,7 @@ Created on 2013-3-21
 import os, shutil
 
 def renameFile(dirPath, fileSuffix, srcStr, targetStr):
-    '''
+    """
     Rename all the files that it's suffix is 'fileSuffix' in the dirPath.
     Replace the string from srcStr to targetStr.
     
@@ -23,7 +23,7 @@ def renameFile(dirPath, fileSuffix, srcStr, targetStr):
     @param targetStr: the target string that you want to 
     @type targetStr: string type
     
-    '''
+    """
     for root, dirs, files in os.walk( dirPath ):
         for file in files:
             if not file.endswith(fileSuffix):

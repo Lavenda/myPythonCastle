@@ -1,8 +1,8 @@
-'''
+"""
 Created on 2013-5-2
 
 @author: lavenda
-'''
+"""
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 import myCommand.MyCommand as MyCommand
@@ -12,7 +12,7 @@ import threading
 import types 
 
 class Core(object):
-    '''
+    """
     This class is the core of the process queue tool.
     It contains most of the local codes, but also part of code in other classes.
     The problem of getting commands from the myCommandQueue has not been solved, 
@@ -20,22 +20,22 @@ class Core(object):
     It also will make other unknow problem, such as making every thread in a mess between method and method.
     
     - methodNameToLock: It is a static dictionary type. There are many detail of which method needs to be lock.
-    '''
+    """
 
     methodNameToLock = {}
 
     def __init__(self, count=100):
-        '''
+        """
         @param count: means how many command you want to run
         @type count: int type(default:100)
         - commandQueue: It is a MyCommandQueue object.
         
-        '''
+        """
         self.commandQueue = MyCommandQueue(count)
     
     
     def build(self, methodObject, isLock=False, priority=3, *args, **kwargs):
-        '''
+        """
         This method is used to init the command queue.
         It will create a Command object and take it into a command queue.
         
@@ -48,7 +48,7 @@ class Core(object):
         
         @return: a boolean type, means whether putting a command into the queue is successful.
         
-        '''
+        """
         
         if isinstance(methodObject, types.MethodType) or isinstance(methodObject, types.FunctionType):
             command = self.__createCommand(methodObject, isLock, priority, args, kwargs)
@@ -60,14 +60,14 @@ class Core(object):
     
     
     def run(self, threadCount=4):
-        '''
+        """
         This method is used to run all commands in queue with difference threads after the build method.
         
         @param threadCount: means how many thread you need to run.
         @type threadCount: int type(default:4)
         
         @return: an boolean type, means whether all the comannds run accurately.
-        '''
+        """
         threads = []
         for i in xrange(threadCount):
             try:
@@ -88,7 +88,7 @@ class Core(object):
     
     
     def __createCommand(self, methodObject, isLock, priority, args, kwargs):
-        '''
+        """
         - A private method.
         This method is used to create a Command object.
         
@@ -104,7 +104,7 @@ class Core(object):
         @type kwargs: dictionary type
         
         @return: a command object.
-        '''
+        """
         command = MyCommand()
         if isLock:
             lock = self.__getLock(methodObject)
@@ -116,7 +116,7 @@ class Core(object):
     
     
     def __getLock(self, methodObject):
-        '''
+        """
         - A private method.
         This method is used to get a Lock object when the method needs to be locked.
         
@@ -125,7 +125,7 @@ class Core(object):
         
         @return: a Lock object.
         
-        '''
+        """
         methodName = methodObject.__name__
         lock = self.methodNameToLock.get(methodName, None)
         if not lock:

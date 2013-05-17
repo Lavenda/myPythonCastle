@@ -1,8 +1,8 @@
-'''
+"""
 Created on 2013-5-15
 
 @author: lavenda
-'''
+"""
 
 #!/usr/bin/env python
 # -*- coding:uft-8 -*-
@@ -19,7 +19,7 @@ def fab02(max):
     n, a, b = 0, 0, 1 
     L = [] 
     while n < max: 
-        L.append(b) 
+        L.append(b)
         a, b = b, a + b 
         n = n + 1 
     return L 
