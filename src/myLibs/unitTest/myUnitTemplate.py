@@ -9,7 +9,7 @@ Created on 2013-5-8
     In future, there are more and more template will be created and offerded
     
 """
-#!/usr/bin/env python
+#!/usr/bin/env python2.6
 # -*- coding:utf-8 -*-
 
 CLASS_TEMPLATE = u"""
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 """
 
 
-METHOD_TEMPLATE= u"""
+METHOD_TEMPLATE = u"""
 
     def test{NAME_REPLACE}(self):
         self.assertEqual({APPLY_REPLACE}, {RESULT_REPALCE})
@@ -37,7 +37,7 @@ METHOD_TEMPLATE= u"""
 """
 
 
-methods = u""""""
+methods = u"""""" 
 """
 - methods: the big string contains all the string of methods and function you want to test
 """
@@ -57,13 +57,13 @@ def buildMethod(func, result, args, kwargs):
     
     """
     funcName = func.__name__.decode('utf-8')
-    applyStr = u'apply(%s,args_%s, kwargs_%s)' %(funcName, funcName, funcName)
+    applyStr = u'apply(%s,args_%s, kwargs_%s)' % (funcName, funcName, funcName)
     resultStr = result.__str__().decode('utf-8')
     method = METHOD_TEMPLATE.replace('{NAME_REPLACE}', funcName)
     method = method.replace('{APPLY_REPLACE}', applyStr)
     method = method.replace('{RESULT_REPALCE}', resultStr)
     global methods
-    methods+=method
+    methods += method
 
 
 def buildClass():

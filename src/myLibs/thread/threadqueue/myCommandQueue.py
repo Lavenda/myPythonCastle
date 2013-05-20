@@ -3,7 +3,7 @@ Created on 2013-5-1
  
 @author: lavenda
 """
-#!/usr/bin/env python
+#!/usr/bin/env python2.6
 # -*- coding:utf-8 -*-
 from Queue import Queue
 import heapq
@@ -86,11 +86,13 @@ class MyCommandQueue(Queue):
         """
         
         if self.queue:
-            priority, time_posted, item = Queue.get(self, block, timeout)
+            item = Queue.get(self, block, timeout)[2]
             command = item[1]
             return command
         else:
             return None
+
+
 
 
 def main():

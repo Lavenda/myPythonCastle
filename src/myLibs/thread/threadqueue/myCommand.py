@@ -3,7 +3,7 @@ Created on 2013-5-1
 
 @author: lavenda 
 """
-#!/usr/bin/env python
+#!/usr/bin/env python2.6
 # -*- coding:utf-8 -*- 
 
 class MyCommand(object):
