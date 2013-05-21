@@ -9,7 +9,8 @@ Created on 2013-5-20
 from SocketServer import TCPServer
 from SocketServer import StreamRequestHandler
 from time import ctime
-from myLibs.thread.threadqueue import core
+import os
+#from myLibs.thread.threadqueue import core
 
 HOST = ''
 PORT = 21567
@@ -18,8 +19,16 @@ ADDR = (HOST, PORT)
 class MyRequestHandler(StreamRequestHandler):
     def handle(self):
         print '...connected from:', self.client_address
-        self.wfile.write('[%s] %s' % (ctime(), self.rfile.readline()))
+        command = self.rfile.readline()
+        back = os.system(command)
+        print back
+        response = 'has done'
+        self.wfile.write('[%s] %s' % (ctime(), response))
         
 tcpServ = TCPServer(ADDR, MyRequestHandler)
 print 'waiting for connection...'
 tcpServ.serve_forever()
+
+
+if __name__ == '__main__':
+    pass

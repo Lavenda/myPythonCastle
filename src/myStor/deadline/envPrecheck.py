@@ -7,14 +7,17 @@ Created on 2013-5-13
 #!/usr/bin/env python2.6
 # -*- coding:utf-8 -*-
 
-import os, hashlib
-import fileOper
+import os
+import hashlib
 import ctypes
 from ctypes.wintypes import MAX_PATH
+import fileOper
+
 
 class EnvPrecheck(object):
+
     
-    SERVER = ['//server-cgi/project'] 
+    SERVER = ['//server-cgi/project']
     MAYA_ENV_FILE = ['//server-cgi/workflowtools_ep20/Install/Maya.env']
     SHAVENODE_FILE = ['C:/Program Files/JoeAlter/shaveHaircut/maya2012/plug-ins/shaveNode.mll']
     SOURCEIMAGE_FOLDER = ['//server-cgi/Project/E020DW/DWep20/sourceimages']
@@ -24,12 +27,12 @@ class EnvPrecheck(object):
     
     def __init__(self):
         pass
-    
-    
+
+
     def precheck(self):
         """
         Precheck the maya environment and maya file whether is right.
-        There are six steps:
+        There are five steps:
             1. check whether can connect the Server.
             2. check whether the maya env file is right.
             3. check whether the ShaveNode.mll file is right.
@@ -39,40 +42,30 @@ class EnvPrecheck(object):
          - check whether the maya file is readable.
             
         """
+        isAllRight = True
 #        if not self._checkServer():
 #            print 'SdiskConnectError'
-##            return 'SdiskConnectError'
+#            return 'SdiskConnectError'
 #            return False
+        print '**************************************************'
         if not self._checkMayaEnvFile():
             print 'MayaEnvError'
 #            return 'MayaEnvError'
-            return False
+            isAllRight = False
         if not self._checkMayaShaveNodeFile():
             print 'ShaveNodeFileError'
 #            return 'ShaveNodeFileError'
-            return False
+            isAllRight = False
         if not self._checkSourceImagesOnServer():
             print 'SourceImagesOnServerError'
 #            return 'SourceImagesOnServerError'
-            return False
+            isAllRight = False
         if not self._checkPluginFolderOnServer():
             print 'PluginFolderError'
 #            return 'PluginFolderError'
-            return False
-        return True
-    
-    
-    
-    def checkMayaFile(self, mayaFile):
-        """
-        check whether the maya file is readable. 
-        """
-        mayaFileName = os.path.basename(mayaFile)
-        if not self._checkMayaFile(mayaFile):
-            print '<%s>MayaFileError' % mayaFileName
-#            return 'MayaFileError'
-            return False
-    
+            isAllRight = False
+        print '**************************************************'
+        return isAllRight
     
     
     def _checkServer(self):
@@ -89,7 +82,10 @@ class EnvPrecheck(object):
         """
         for path in pathList:
             if fileOper.isExistAndOpen(path):
+                print '        <%s> ......OK' % path
                 return path
+            else:
+                print '<%s> ......Failure' % path
         return None
     
     
@@ -97,6 +93,7 @@ class EnvPrecheck(object):
         """
         check whether the maya env file is right.
         """
+        print '    -> check the Maya Env File'
         userDocumentsPath = self._getUserDocuments()
         myMayaEnvFile = os.path.join(userDocumentsPath, 'maya', self.MAYA_VERSION, 'maya.env')
         if not fileOper.isExistAndOpen(myMayaEnvFile):
@@ -112,12 +109,14 @@ class EnvPrecheck(object):
                 serverMD5 = hashlib.md5(server).digest()
                 localMD5 = hashlib.md5(local).digest()
                 if not (serverMD5 == localMD5):
+                    print '<%s> ......Failure' % myMayaEnvFile
                     return False
         except:
             print 'open maya env error'
         finally:
             serverMayaEnvStream.close()
             myMayaEnvStream.close()
+            
         return True
     
     
@@ -132,7 +131,7 @@ class EnvPrecheck(object):
             #print(buf.value)
             return buf.value
         else:
-            print("get user documents Failure!")
+            print 'get user documents Failure!'
             return None
     
     
@@ -140,6 +139,7 @@ class EnvPrecheck(object):
         """
         check whether the ShaveNode.mll file is right.
         """
+        print '    -> check Maya ShaveNode File'
         return self._isExistAndOpenInList(self.SHAVENODE_FILE)
     
     
@@ -147,6 +147,7 @@ class EnvPrecheck(object):
         """
         check whether the texture files is readable.
         """
+        print '    -> check Source Images On Server'
         sourceimagesFolder = self._isExistAndOpenInList(self.SOURCEIMAGE_FOLDER)
         if not sourceimagesFolder:
             return False
@@ -154,23 +155,45 @@ class EnvPrecheck(object):
             elementPath = os.path.join(sourceimagesFolder, element)
             if not fileOper.isExistAndOpen(elementPath):
                 return False
+            
         return True
     
+
+    def _checkPluginFolderOnServer(self):
+        """
+        check whether the plugin folder is readable.
+        """
+        print '    -> check Plugin Folder On Server'
+        return self._isExistAndOpenInList(self.PLUGIN_FOLDER)
+
+    
+    def checkMayaFile(self, mayaFile):
+        """
+        check whether the maya file is readable.
+        """
+        if not self._checkMayaFile(mayaFile):
+            print '<%s>MayaFileError' % mayaFile
+#            return 'MayaFileError'
+            return False
+        
+        return True
+
     
     def _checkMayaFile(self, mayaFile):
         """
         check whether the maya file is readable.
         """
-        return fileOper.isExistAndOpen(mayaFile) 
+        return fileOper.isExistAndOpen(mayaFile)
     
-    
-    def _checkPluginFolderOnServer(self):
-        """
-        check whether the plugin folder is readable.
-        """
-        return self._isExistAndOpenInList(self.PLUGIN_FOLDER)
 
+
+
+
+
+def main():
+    EP = EnvPrecheck()
+    EP.precheck()
 
 if __name__ == '__main__':
-    cls = EnvPrecheck()
-    print cls.precheck() 
+#    print  EnvPrecheck().precheck()
+    main()
