@@ -45,10 +45,10 @@ class MyThread(Thread):
                 break
             if self.__lock:
                 if self.__lock.acquire():
-                    apply(self.__target, self.__args, self.__kwargs)
+                    self.__target(*self.__args, **self.__kwargs)
                     self.__lock.release()
             else:
-                apply(self.__target, self.__args, self.__kwargs)
+                self.__target(*self.__args, **self.__kwargs)
     
     
     def __getDetailFromCommand(self, command):
@@ -79,23 +79,23 @@ class MyThread(Thread):
     
     
     
-"""
-#just test:
-from myCommand import MyCommand
-from threading import Lock
-num = 1
-# lock = Lock()
-lock = None
-def test():
-    global num
-    for i in range(10):
-        num += 1
-        print num
-if __name__ == '__main__':
-    command = MyCommand()
-    command.setCommand(methodObject=test, lock=lock, priority=2, args=[], kwargs={})
-    myThread =  MyThread(command=command)
-    myThread1 =  MyThread(command=command)
-    myThread.start()
-    myThread1.start()
-"""
+
+##just test:
+#from myCommand import MyCommand
+#from threading import Lock
+#num = 1
+## lock = Lock()
+#lock = None
+#def test():
+#    global num
+#    for i in range(10):
+#        num += 1
+#        print num
+#if __name__ == '__main__':
+#    command = MyCommand()
+#    command.setCommand(methodObject=test, lock=lock, priority=2, args=[], kwargs={})
+#    myThread =  MyThread()
+#    myThread1 =  MyThread(commandQueue)
+#    myThread.start()
+#    myThread1.start()
+

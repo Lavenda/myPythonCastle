@@ -57,7 +57,7 @@ def buildMethod(func, result, args, kwargs):
     
     """
     funcName = func.__name__.decode('utf-8')
-    applyStr = u'apply(%s,args_%s, kwargs_%s)' % (funcName, funcName, funcName)
+    applyStr = u'%s(*args_%s, **kwargs_%s)' % (funcName, funcName, funcName)
     resultStr = result.__str__().decode('utf-8')
     method = METHOD_TEMPLATE.replace('{NAME_REPLACE}', funcName)
     method = method.replace('{APPLY_REPLACE}', applyStr)

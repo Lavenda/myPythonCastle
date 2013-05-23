@@ -10,8 +10,9 @@ Created on 2013-5-13
 import os
 import hashlib
 import ctypes
-from ctypes.wintypes import MAX_PATH
+import shutil
 import fileOper
+from ctypes.wintypes import MAX_PATH
 
 
 class EnvPrecheck(object):
@@ -24,6 +25,7 @@ class EnvPrecheck(object):
     PLUGIN_FOLDER = ['//server-cgi/workflowtools_ep20']
     
     MAYA_VERSION = '2012-x64'
+    RENDERFARM_ACCOUNT_NAME = 'renderfarm'
     
     def __init__(self):
         pass
@@ -48,7 +50,7 @@ class EnvPrecheck(object):
 #            return 'SdiskConnectError'
 #            return False
         print '**************************************************'
-        if not self._checkMayaEnvFile():
+        if not self._checkRenderMayaEnvFile():
             print 'MayaEnvError'
 #            return 'MayaEnvError'
             isAllRight = False
@@ -89,13 +91,38 @@ class EnvPrecheck(object):
         return None
     
     
-    def _checkMayaEnvFile(self):
+    def _checkRenderMayaEnvFile(self):
+        """
+        only check the maya env file in render farm account.
+        """
+        userDocumentsPath = self._getUserDocuments()
+        myMayaEnvFile = os.path.join(userDocumentsPath, 'maya', self.MAYA_VERSION, 'maya.env')
+        
+        if not os.path.isfile(myMayaEnvFile):
+            print 'local maya env is not exist'
+            return False
+        
+        isRight = self._checkMayaEnvFile(myMayaEnvFile)
+        if isRight:
+            return True
+        else:
+            if self.RENDERFARM_ACCOUNT_NAME in userDocumentsPath:
+                isCopySuccess = self._copyMayaEnvFile(myMayaEnvFile)
+                if isCopySuccess:
+                    isRight = self._checkMayaEnvFile(myMayaEnvFile)
+                else:
+                    return False
+            else:
+                print 'the current account is not RENDERFARM_ACCOUNT'
+        
+        return isRight
+    
+    
+    def _checkMayaEnvFile(self, myMayaEnvFile):
         """
         check whether the maya env file is right.
         """
         print '    -> check the Maya Env File'
-        userDocumentsPath = self._getUserDocuments()
-        myMayaEnvFile = os.path.join(userDocumentsPath, 'maya', self.MAYA_VERSION, 'maya.env')
         if not fileOper.isExistAndOpen(myMayaEnvFile):
             return False
         mayaEnvFile = self._isExistAndOpenInList(self.MAYA_ENV_FILE)
@@ -117,6 +144,21 @@ class EnvPrecheck(object):
             serverMayaEnvStream.close()
             myMayaEnvStream.close()
             
+        return True
+    
+    
+    def _copyMayaEnvFile(self, myMayaEnvFile):
+        """
+        copy the maya env file on server to the local maya env file
+        """
+        try:
+            reName = myMayaEnvFile + '.bak'
+            shutil.move(myMayaEnvFile, reName)
+            shutil.copy(self.MAYA_ENV_FILE[0], myMayaEnvFile)
+        except:
+            print 'copy maya env file error'
+            return False
+        
         return True
     
     

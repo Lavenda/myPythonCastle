@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<socketConfig>
+    
+    <socketData>
+        <hint>system</hint>
+        <import>classTest</import>
+        <goal type='function'>handleCommand</goal>
+    </socketData>
+    
+    
+</socketConfig>

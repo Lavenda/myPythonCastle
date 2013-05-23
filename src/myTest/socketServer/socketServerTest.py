@@ -6,7 +6,7 @@ Created on 2013-5-20
 #!/usr/bin/env python2.6
 # -*- utf-8
 
-from SocketServer import TCPServer
+from SocketServer import ThreadingTCPServer
 from SocketServer import StreamRequestHandler
 from time import ctime
 import os
@@ -25,10 +25,12 @@ class MyRequestHandler(StreamRequestHandler):
         response = 'has done'
         self.wfile.write('[%s] %s' % (ctime(), response))
         
-tcpServ = TCPServer(ADDR, MyRequestHandler)
-print 'waiting for connection...'
-tcpServ.serve_forever()
+        
+def main():
+    tcpServ = ThreadingTCPServer(ADDR, MyRequestHandler)
+    print 'waiting for connection...'
+    tcpServ.serve_forever()
 
 
 if __name__ == '__main__':
-    pass
+    main()

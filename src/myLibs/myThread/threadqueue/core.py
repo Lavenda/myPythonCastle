@@ -5,9 +5,9 @@ Created on 2013-5-2
 """
 #!/usr/bin/env python2.6
 # -*- coding:utf-8 -*-
-import myCommand.MyCommand as MyCommand
-import myCommandQueue.MyCommandQueue as MyCommandQueue
-import myThread.MyThread as MyThread
+import myCommand
+import myThread
+import myCommandQueue
 import threading
 import types 
 
@@ -31,7 +31,8 @@ class Core(object):
         - commandQueue: It is a MyCommandQueue object.
         
         """
-        self.commandQueue = MyCommandQueue(count)
+        self.commandQueue = myCommandQueue.MyCommandQueue(count)
+        self.threadList = []
     
     
     def build(self, methodObject, isLock=False, priority=3, *args, **kwargs):
@@ -68,22 +69,28 @@ class Core(object):
         
         @return: an boolean type, means whether all the comannds run accurately.
         """
-        threads = []
+        
         for i in xrange(threadCount):
             try:
-                thread = MyThread(self.commandQueue)
+                thread = myThread.MyThread(self.commandQueue)
             except:
                 continue
-            threads.append(thread)
-            
-        for thread in threads:
+            self.threadList.append(thread)
+        
+        for thread in self.threadList:
             try:
                 thread.start()
             except:
                 continue
-        
-#        for thread in threads:
-#            thread.join()
+    
+    
+    def stop(self):
+        """
+        This method is used to check the running thread, 
+        and stop the main thread when all the sub threads are end.
+        """
+        for thread in self.threadList:
+            thread.join()
         return True
     
     
@@ -105,14 +112,14 @@ class Core(object):
         
         @return: a command object.
         """
-        command = MyCommand()
+        command = myCommand.MyCommand()
         if isLock:
             lock = self.__getLock(methodObject)
         else:
             lock = None
         command.setCommand(methodObject, lock, priority, args, kwargs)
         
-        return command
+        return command 
     
     
     def __getLock(self, methodObject):

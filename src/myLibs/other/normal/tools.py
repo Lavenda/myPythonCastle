@@ -34,7 +34,7 @@ def timer(func, count=1, every=1, *args, **kwargs):
         startTime = time.clock()
         
         for j in xrange(every):
-            apply(func, args, kwargs)
+            func(*args, **kwargs)
         endTime = time.clock()
         runTime = endTime-startTime
         runTimeGroup.append(runTime)
