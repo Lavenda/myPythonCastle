@@ -50,13 +50,17 @@ class MyRequestHandler(StreamRequestHandler):
             importEnv, goalType, goalValue = scf.getGoalByHint(hint)
             if not importEnv:
                 return 1, u'None'
-            goal = getattr(__import__(importEnv),goalValue)
+            goal = getattr(__import__(importEnv), goalValue)
             flag = hint
-            return 1, u'None'
+            return 0, u'system'
         if flag == u'system':
+            if hint == u'exit':
+                flag = None
+                return 0, u'None'
             result = goal(hint)
             return result, u'system'
-        
+
+
 def main(host, port=21567):
     address = (host, port)
     tcpServ = ThreadingTCPServer(address, MyRequestHandler)
