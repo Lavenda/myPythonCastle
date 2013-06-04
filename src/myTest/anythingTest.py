@@ -56,7 +56,7 @@ def osStatTest():
     print os.stat(path)
     
     
-def osGetmtime():
+def osGetmtimeTest():
     import os 
     path = r'C:\Users\huangchengqi\Desktop\a\DRGN_2007_s05_A058_CMP_V01.mov'
     print os.path.getmtime(path)
@@ -72,5 +72,19 @@ def sequenceTest():
     sequence = shotName.split('_')[2]
     print sequence
     
+def tupleTest():
+    tupleSet = ()
+    tupleSet.extend('a')
+    print tupleSet
+    
+def addIntoListWithItsLoop():
+    numList = [1,3,4]
+    count = 0
+    for num in numList:
+        if count < 9 :
+            numList.append(count)
+        count += 1
+        print numList
+    
 if __name__ == '__main__':
-    osGetmtime()
+    addIntoListWithItsLoop()

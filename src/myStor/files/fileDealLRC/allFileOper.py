@@ -14,6 +14,7 @@ class WorkFile(object):
 
     def __init__(self):
         self.fileName = ''
+        self.standardName = ''
         self.fileSuffix = ''
         self.shotName = ''
         self.sequenceName = ''
@@ -30,6 +31,9 @@ class WorkFile(object):
         self.modifyTime = os.path.getmtime(filePath)
 
 
+    def initBeforeCopy(self, workFileAddrDic):
+        return workFileAddrDic
+
 
 class VideoFile(WorkFile):
     """
@@ -39,6 +43,25 @@ class VideoFile(WorkFile):
 
     def __init__(self):
         WorkFile.__init__(self)
+        self.pictureFile = None
+
+
+    def setPictureFile(self, pictureFile):
+        self.pictureFile = pictureFile
+
+
+    def initBeforeCopy(self, workFileAddrDic):
+        videoSignName = self.shotName + '_video'
+        pictureSignName = self.shotName + '_picture'
+        if pictureSignName in workFileAddrDic:
+            self.pictureFile = workFileAddrDic[pictureSignName]
+        else:
+            """
+            @todo: use the rv to get single frame from mov file
+            """
+            pass
+        return workFileAddrDic
+
 
 
 
@@ -55,11 +78,13 @@ class PictureFile(WorkFile):
 
 class WorkFileFactory(object):
 
+
     def __init__(self):
-        self.workFileDic = {}
+        self.workFileAddrDic = {}
+        self.signName = ''
 
 
-    def createWorkFile(self, filePath):
+    def addWorkFileIntoAddrDic(self, filePath):
         """
         create workFile object by different file type.
 
@@ -70,28 +95,32 @@ class WorkFileFactory(object):
         """
         VIDEO_SUFFIX = ['.mov', '.mkv']
         PICTURE_SUFFIX = ['.exr', '.jpg', '.tif']
+
         fileSuffix = os.path.splitext(filePath)
         fileSuffix = fileSuffix.lower()
-
-        if fileSuffix in VIDEO_SUFFIX:
-            return self.__createVideoFile(filePath)
-        elif fileSuffix in PICTURE_SUFFIX:
-            return self.__createPictureFile(filePath)
-        else:
-            return WorkFile()
-
-
-    def __createVideoFile(self, filePath):
-        """
-        create the video file
-        """
         shotName = baseFileOper.ShotFileOperation().getShotName(filePath)
-        
 
 
+        if (fileSuffix in VIDEO_SUFFIX and 
+            self.__isRepeatInAddrDic(shotName, '_video')):
+            workFile = VideoFile()
+        elif (fileSuffix in PICTURE_SUFFIX and 
+              self.__isRepeatInAddrDic(shotName, '_picture')):
+            workFile = PictureFile()
+        else:
+            workFile = None
 
-    def __createPictureFile(self, filePath):
-        """
-        create the video file
-        """
-        pass
+        if workFile:
+            self.workFileAddrDic[self.signName] = workFile
+
+
+    def __isRepeatInAddrDic(self, shotName, fileType):
+        self.signName = shotName + fileType
+        if self.signName in self.workFileAddrDic:
+            return False
+        else:
+            return True
+
+
+    def getWorkFileAddrDic(self):
+        return self.workFileAddrDic

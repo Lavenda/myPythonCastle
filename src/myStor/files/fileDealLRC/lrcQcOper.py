@@ -9,6 +9,7 @@ Created on 2013-6-4
 
 import os
 import time
+import allFileOper
 
 class LrcQcOperation(object):
     """
@@ -33,10 +34,12 @@ class LrcQcOperation(object):
         @type dealedDate: string type(default:None)
         """
         dealedPath = self.__getDealedPath(dealedDate)
-        shotFileList = self._getAllShotFile(dealedPath)
-        # self._copyAllToPending(shotFileList)
-        # self._copySingleFrameToFramesDir()
-        # self.runSpliceBat()
+        workFileAddrDic = self._getAllWorkFileAddrDic(dealedPath)
+
+        for signName, workFile in workFileAddrDic.items():
+            workFileAddrDic = workFile.initBeforeCopy(workFileAddrDic)
+            workFile.checkBeforeCopy()
+            workFile.copyToTarget()
 
 
     def __getDealedPath(self, dealedDate):
@@ -46,19 +49,13 @@ class LrcQcOperation(object):
             return os.path.join(self.LIGHTING_QC_ROOT_PATH, dealedDate)
 
 
-    def _getAllShotFile(self, dealedDatePath):
-        for rootDir, dirs, files in os.walk(dealedDatePath):
-            print rootDir, dirs, files
+    def _getAllWorkFileAddrDic(self, dealedDatePath):
+        workFileFactory = allFileOper.WorkFileFactory()
 
+        for rootDir, dirName, fileName in os.walk(dealedDatePath):
+            filePath = os.path.join(rootDir, dirName, fileName)
+            workFileFactory.addWorkFileIntoAddrDic(filePath)
 
-    def _copyAllToPending(self, shotFileList):
-        pass
+        return workFileFactory.getWorkFileAddrDic()
 
-
-    def _copySingleFrameToFramesDir(self):
-        pass
-
-
-    def runAllSpliceBat(self):
-        pass
 
