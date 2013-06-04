@@ -8,11 +8,11 @@ Created on 2013-5-13
 # -*- coding:utf-8 -*-
 
 import os
-import hashlib
 import ctypes
 import shutil
-import fileOper
+import filecmp
 from ctypes.wintypes import MAX_PATH
+import fileOper
 
 
 class EnvPrecheck(object):
@@ -20,7 +20,8 @@ class EnvPrecheck(object):
     
     SERVER = ['//server-cgi/project']
     MAYA_ENV_FILE = ['//server-cgi/workflowtools_ep20/Install/Maya.env']
-    SHAVENODE_FILE = ['C:/Program Files/JoeAlter/shaveHaircut/maya2012/plug-ins/shaveNode.mll']
+    SHAVENODE_FILE = [('C:/Program Files/JoeAlter/shaveHaircut/'
+                       'maya2012/plug-ins/shaveNode.mll')]
     SOURCEIMAGE_FOLDER = ['//server-cgi/Project/E020DW/DWep20/sourceimages']
     PLUGIN_FOLDER = ['//server-cgi/workflowtools_ep20']
     
@@ -28,7 +29,7 @@ class EnvPrecheck(object):
     RENDERFARM_ACCOUNT_NAME = 'renderfarm'
     
     def __init__(self):
-        pass
+        self.resultStrList = []
 
 
     def precheck(self):
@@ -42,34 +43,71 @@ class EnvPrecheck(object):
             5. check whether the plugin folder is readable.
         And a single step:
          - check whether the maya file is readable.
-            
+        
+        @return: a string type, contains all the results from every check.
         """
         isAllRight = True
 #        if not self._checkServer():
-#            print 'SdiskConnectError'
+#            self._writeIntoResultStringByType('SdiskConnectError')
 #            return 'SdiskConnectError'
 #            return False
-        print '**************************************************'
+        self._writeIntoResultStringByType('*********************'
+                                          '*********************')
         if not self._checkRenderMayaEnvFile():
-            print 'MayaEnvError'
+            self._writeIntoResultStringByType('MayaEnvError', 
+                                              'error')
 #            return 'MayaEnvError'
             isAllRight = False
         if not self._checkMayaShaveNodeFile():
-            print 'ShaveNodeFileError'
+            self._writeIntoResultStringByType('ShaveNodeFileError', 
+                                              'error')
 #            return 'ShaveNodeFileError'
             isAllRight = False
         if not self._checkSourceImagesOnServer():
-            print 'SourceImagesOnServerError'
+            self._writeIntoResultStringByType('SourceImagesOnServerError', 
+                                              'error')
 #            return 'SourceImagesOnServerError'
             isAllRight = False
         if not self._checkPluginFolderOnServer():
-            print 'PluginFolderError'
+            self._writeIntoResultStringByType('PluginFolderError', 
+                                              'error')
 #            return 'PluginFolderError'
             isAllRight = False
-        print '**************************************************'
+        self._writeIntoResultStringByType('*********************'
+                                          '*********************')
+        
         return isAllRight
     
     
+    def backResultStrList(self):
+        """
+        back a list of the every check result. 
+        """
+        return self.resultStrList
+    
+    
+    def _writeIntoResultStringByType(self, resultStr, strType='root'):
+        """
+        take the result string into a result list by its type
+        
+        @param resultStr: a result string from a check
+        @type resultStr: string type
+        @param strType:  a type string of messages to print style.
+        @type strType: string type
+        
+        """
+        if strType == 'l1':
+            self.resultStrList.append('    ' + resultStr)
+        elif strType == 'l2':
+            self.resultStrList.append('        ' + resultStr)
+        elif strType == 'error':
+            self.resultStrList.append('Error: ' + resultStr)
+        elif strType == 'warning':
+            self.resultStrList.append('Warning: ' + resultStr) 
+        else:
+            self.resultStrList.append(resultStr)
+
+
     def _checkServer(self):
         """
         check whether can connect the Server.
@@ -84,81 +122,107 @@ class EnvPrecheck(object):
         """
         for path in pathList:
             if fileOper.isExistAndOpen(path):
-                print '        <%s> ......OK' % path
+                self._writeIntoResultStringByType('<%s> ......READ OK' 
+                                                  % path, 'l2')
                 return path
             else:
-                print '<%s> ......Failure' % path
-        return None
+                self._writeIntoResultStringByType('<%s> ......READ Failure' 
+                                                  % path, 'error')
+        return None 
     
     
     def _checkRenderMayaEnvFile(self):
         """
         only check the maya env file in render farm account.
         """
-        userDocumentsPath = self._getUserDocuments()
-        myMayaEnvFile = os.path.join(userDocumentsPath, 'maya', self.MAYA_VERSION, 'maya.env')
         
-        if not os.path.isfile(myMayaEnvFile):
-            print 'local maya env is not exist'
-            return False
+        userDocumentsPath = self._getUserDocuments()
+        myMayaEnvFile = os.path.join(userDocumentsPath, 'maya',
+                                     self.MAYA_VERSION, 'maya.env')
+        currentAccount = userDocumentsPath.encode('utf-8').split('\\')[2]
+        
+        self._writeIntoResultStringByType('*** <%s> is current account. ***' 
+                                    % currentAccount)
+        self._writeIntoResultStringByType('-> check the Maya Env File', 'l1')
+        self._checkAndCopyMayaEnvFile(myMayaEnvFile)
         
         isRight = self._checkMayaEnvFile(myMayaEnvFile)
         if isRight:
-            return True
+            return isRight
         else:
             if self.RENDERFARM_ACCOUNT_NAME in userDocumentsPath:
-                isCopySuccess = self._copyMayaEnvFile(myMayaEnvFile)
-                if isCopySuccess:
+                if self._copyAndBackupMayaEnvFile(myMayaEnvFile):
                     isRight = self._checkMayaEnvFile(myMayaEnvFile)
-                else:
-                    return False
             else:
-                print 'the current account is not RENDERFARM_ACCOUNT'
+                self._writeIntoResultStringByType(('the current account is '
+                                                  'not <RENDERFARM_ACCOUNT>'),
+                                                  'warning')
         
         return isRight
+    
+    
+    def _checkAndCopyMayaEnvFile(self, myMayaEnvFile):
+        """
+        check the maya env file is exist or not.
+        if not exist, will copy it from server.
+        """
+        if not os.path.isfile(myMayaEnvFile):
+            self._writeIntoResultStringByType('<%s> is not exist'
+                                        % myMayaEnvFile, 'error')
+            self._copyMayaEnvFile(myMayaEnvFile)
     
     
     def _checkMayaEnvFile(self, myMayaEnvFile):
         """
         check whether the maya env file is right.
         """
-        print '    -> check the Maya Env File'
         if not fileOper.isExistAndOpen(myMayaEnvFile):
             return False
         mayaEnvFile = self._isExistAndOpenInList(self.MAYA_ENV_FILE)
         if not mayaEnvFile:
             return False
         
-        serverMayaEnvStream = open(mayaEnvFile, 'r')
-        myMayaEnvStream = open(myMayaEnvFile, 'r')
         try:
-            for server, local in zip(serverMayaEnvStream, myMayaEnvStream):
-                serverMD5 = hashlib.md5(server).digest()
-                localMD5 = hashlib.md5(local).digest()
-                if not (serverMD5 == localMD5):
-                    print '<%s> ......Failure' % myMayaEnvFile
-                    return False
+            isSame = filecmp.cmp(mayaEnvFile, myMayaEnvFile)
+            if not isSame:
+                self._writeIntoResultStringByType('<%s> is not right' 
+                                                  % myMayaEnvFile, 'error')
+                return False
         except:
-            print 'open maya env error'
-        finally:
-            serverMayaEnvStream.close()
-            myMayaEnvStream.close()
-            
+            self._writeIntoResultStringByType('open maya env error', 'error')
+        self._writeIntoResultStringByType('<%s> ...... CHECK OK' 
+                                                % myMayaEnvFile, 'l2')
         return True
     
     
-    def _copyMayaEnvFile(self, myMayaEnvFile):
+    def _copyAndBackupMayaEnvFile(self, myMayaEnvFile):
         """
-        copy the maya env file on server to the local maya env file
+        backup the local maya env file,
+        and copy the maya env file from server to local
         """
         try:
             reName = myMayaEnvFile + '.bak'
-            shutil.move(myMayaEnvFile, reName)
-            shutil.copy(self.MAYA_ENV_FILE[0], myMayaEnvFile)
+            shutil.move(myMayaEnvFile, reName) 
         except:
-            print 'copy maya env file error'
+            self._writeIntoResultStringByType('backup maya env file error',
+                                              'error')
             return False
         
+        return self._copyMayaEnvFile(myMayaEnvFile)
+
+    
+    def _copyMayaEnvFile(self, myMayaEnvFile):
+        """
+        copy the maya env file from server to local
+        """
+        try:
+            shutil.copy(self.MAYA_ENV_FILE[0], myMayaEnvFile)
+        except:
+            self._writeIntoResultStringByType('copy maya env file error',
+                                              'error')
+            return False
+        self._writeIntoResultStringByType('<%s> copy completed' % myMayaEnvFile,
+                                          'warning')
         return True
     
     
@@ -173,7 +237,8 @@ class EnvPrecheck(object):
             #print(buf.value)
             return buf.value
         else:
-            print 'get user documents Failure!'
+            self._writeIntoResultStringByType('get user documents Failure!',
+                                              'error')
             return None
     
     
@@ -181,7 +246,7 @@ class EnvPrecheck(object):
         """
         check whether the ShaveNode.mll file is right.
         """
-        print '    -> check Maya ShaveNode File'
+        self._writeIntoResultStringByType('-> check Maya ShaveNode File', 'l1')
         return self._isExistAndOpenInList(self.SHAVENODE_FILE)
     
     
@@ -189,13 +254,14 @@ class EnvPrecheck(object):
         """
         check whether the texture files is readable.
         """
-        print '    -> check Source Images On Server'
+        self._writeIntoResultStringByType('-> check Source Images On Server',
+                                          'l1')
         sourceimagesFolder = self._isExistAndOpenInList(self.SOURCEIMAGE_FOLDER)
         if not sourceimagesFolder:
             return False
         for element in os.listdir(sourceimagesFolder):
             elementPath = os.path.join(sourceimagesFolder, element)
-            if not fileOper.isExistAndOpen(elementPath):
+            if not fileOper.isExistAndOpen(elementPath): 
                 return False
             
         return True
@@ -205,17 +271,18 @@ class EnvPrecheck(object):
         """
         check whether the plugin folder is readable.
         """
-        print '    -> check Plugin Folder On Server'
+        self._writeIntoResultStringByType('-> check Plugin Folder On Server',
+                                          'l1')
         return self._isExistAndOpenInList(self.PLUGIN_FOLDER)
 
     
     def checkMayaFile(self, mayaFile):
-        """
+        """ 
         check whether the maya file is readable.
         """
         if not self._checkMayaFile(mayaFile):
-            print '<%s>MayaFileError' % mayaFile
-#            return 'MayaFileError'
+            self._writeIntoResultStringByType('<%s>MayaFileError' 
+                                        % mayaFile, 'error')
             return False
         
         return True
@@ -229,13 +296,10 @@ class EnvPrecheck(object):
     
 
 
-
-
-
 def main():
-    EP = EnvPrecheck()
-    EP.precheck()
+    epCls = EnvPrecheck()
+    print epCls.precheck() 
+    print '\n'.join(epCls.backResultStrList())
 
 if __name__ == '__main__':
-#    print  EnvPrecheck().precheck()
     main()

@@ -37,8 +37,10 @@ class MyRequestHandler(StreamRequestHandler):
             response += '@'
         self.wfile.write('[%s] %s' % (ctime(), response))
     
+
     def setup(self):
         StreamRequestHandler.setup(self)
+    
     
     def commandHandle(self, hint):
         global flag

@@ -37,4 +37,5 @@ def renameFile(dirPath, fileSuffix, srcStr, targetStr):
 
 
 if __name__ == '__main__':
-    renameFile(r'S:\E020DW\Data_ from_DW\preAsset\20130517\cgfxTemp2', '.ma', '_TEX_HI', '_HWS')
+    renameFile(r'S:\E020DW\Data_ from_DW\preAsset\20130530', '.ma', 
+               '_RIG_HI2_02', '_HWS')
