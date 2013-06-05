@@ -10,7 +10,7 @@ Created on 2013-5-8
     
 """
 #!/usr/bin/env python2.6
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 
 CLASS_TEMPLATE = u"""
 import unittest

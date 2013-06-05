@@ -1,16 +1,16 @@
+#!/usr/bin/env python2.6
+#-*- coding:utf-8 -*-
+
 """
 Created on 2013-6-4
 
 @author: lavenda
 """
 
-#!/usr/bin/env python2.6
-#-*- coding:utf-8 -*-
-
 import shutil
-import os
+import os 
 
-class ShotFileOperation(object):
+class LrcFileOperation(object):
 
     def __init__(self):
         pass
@@ -49,30 +49,45 @@ class ShotFileOperation(object):
 
 
     @staticmethod
-    def getSingleFrame(shotFile):
+    def getSingleFrame(LrcFile):
         """
         get first frame from the shot file
         """
-        if shotFile.fileType == '.mov':
+        if LrcFile.fileType == '.mov':
             'run get single frame'
             pass
-
-
+    
+    
+    @staticmethod
+    def getShotCodeCaseDic():
+        from odwlib.tactic.server.biz import shotBiz 
+        shotBizObj = shotBiz.ShotBiz()
+        shotCodeList =  shotBizObj.getShotCodeList()
+        shotCodeCaseDic = {}
+        for shotCode in shotCodeList:
+            shotCodeCaseDic[shotCode.lower()] = shotCode
+        return shotCodeCaseDic
+    
+    
     @staticmethod
     def getShotName(srcPath):
         """
         get the shot name from the file path
         """
-        return os.path.basename(srcPath)[0:17]
-
-
+        fileName = os.path.basename(srcPath)
+        if fileName[18] == '_':
+            return fileName[0:18]
+        else:
+            return fileName[0:19]
+    
+    
     @staticmethod
-    def compareFiles(srcShotFile, tagShotFile):
+    def compareFiles(srcLrcFile, tagLrcFile):
         """
         compare the modify time and its shot name between the two shot files.
         """
-        if srcShotFile.modifyTime <= tagShotFile.modifyTime:
+        if srcLrcFile.modifyTime <= tagLrcFile.modifyTime:
             return False
-        if srcShotFile.shotName != tagShotFile.shotName:
+        if srcLrcFile.shotName != tagLrcFile.shotName:
             return False
         return True

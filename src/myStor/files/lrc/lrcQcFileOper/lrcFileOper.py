@@ -1,15 +1,15 @@
+#!/usr/bin/env python2.6
+#-*- coding:utf-8 -*-
+
 """
 Created on 2013-6-4
 
 @author: lavenda
 """
 
-#!/usr/bin/env python2.6
-#-*- coding:utf-8 -*-
-
 import os
 import time
-import allFileOper
+from odwlib.lrc.lrcQcFileOper import workFileData
 
 class LrcQcOperation(object):
     """
@@ -38,8 +38,10 @@ class LrcQcOperation(object):
 
         for signName, workFile in workFileAddrDic.items():
             workFileAddrDic = workFile.initBeforeCopy(workFileAddrDic)
-            workFile.checkBeforeCopy()
-            workFile.copyToTarget()
+            
+            print workFileAddrDic
+#            workFile.checkBeforeCopy()
+#            workFile.copyToTarget()
 
 
     def __getDealedPath(self, dealedDate):
@@ -50,12 +52,11 @@ class LrcQcOperation(object):
 
 
     def _getAllWorkFileAddrDic(self, dealedDatePath):
-        workFileFactory = allFileOper.WorkFileFactory()
+        workFileFactory = workFileData.WorkFileFactory()
 
-        for rootDir, dirName, fileName in os.walk(dealedDatePath):
-            filePath = os.path.join(rootDir, dirName, fileName)
-            workFileFactory.addWorkFileIntoAddrDic(filePath)
+        for rootDir, dirList, fileList in os.walk(dealedDatePath):
+            for fileName in fileList:
+                filePath = os.path.join(rootDir, fileName)
+                workFileFactory.addWorkFileIntoAddrDic(filePath)
 
         return workFileFactory.getWorkFileAddrDic()
-
-

@@ -5,7 +5,7 @@ Created on 2013-5-15
 """
 
 #!/usr/bin/env python2.6
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 
 def echo(value=None):
     print "Execution starts when 'next()' is called for the time."

@@ -85,6 +85,16 @@ def addIntoListWithItsLoop():
             numList.append(count)
         count += 1
         print numList
+        
+def listMergeTest():
+    list1 = [1,2,3]
+    list2 = [1,2,3]
+    list3 = list1+list2
+    print list3
+
+def stringListTest():
+    a = 'DRGN_2007_S09_A142_CMP_v01.0100.tif'
+    print a[0:18]
     
 if __name__ == '__main__':
-    addIntoListWithItsLoop()
+    stringListTest()
