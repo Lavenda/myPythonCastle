@@ -10,7 +10,6 @@ Created on 2013-3-21
 import os
 from odwlib.lrc import baseLrcFileOper
 from odwlib.lrc import workFileData
-from odwlib.unitTest import myPyUnit
 
 class WorkFileFactory(object):
         
@@ -80,5 +79,6 @@ class WorkFileFactory(object):
     def getWorkFileAddrDic(self):
         return self.workFileAddrDic
 
+
 if __name__ == '__main__':
-    myPyUnit.run(globals())
+    pass

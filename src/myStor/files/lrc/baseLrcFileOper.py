@@ -91,3 +91,23 @@ class LrcFileOperation(object):
         if srcLrcFile.shotName != tagLrcFile.shotName:
             return False
         return True
+
+
+    @staticmethod
+    def renameFile(rootPath, srcName, tagName):
+        """
+        rename the file 
+        """
+        srcPath = os.path.join(rootPath, srcName)
+        if os.path.isfile(srcPath):
+            tagPath = os.path.join(rootPath, tagName)
+            print srcPath
+            print '--> tagPath'
+            try:
+                shutil.move(srcPath, tagPath)
+            except Exception, e:
+                print '<%s> is error' % srcPath
+                return False
+            return True
+            
+            

@@ -19,6 +19,7 @@ class WorkFile(object):
         self.shotName = ''
         self.sequenceName = ''
         self.filePath = ''
+        self.rootPath = ''
         self.modifyTime = 0.0
     
     
@@ -27,6 +28,7 @@ class WorkFile(object):
         self.fileExt = os.path.splitext(filePath)
         self.shotName = baseLrcFileOper.LrcFileOperation.getShotName(filePath)
         self.filePath = filePath
+        self.rootPath = os.path.dirname(filePath)
         self.modifyTime = os.path.getmtime(filePath)
     
     
@@ -47,6 +49,13 @@ class WorkFile(object):
         
     def _checkSuffixNaming(self):
         pass
+
+
+    def renameFileName(self):
+        tagName = self.fileName.replace(self.shotName, self.standardName)
+        return baseLrcFileOper.LrcFileOperation.renameFileName(self.rootPath,
+                                                               self.fileName,
+                                                               tagName)
     
 
 
