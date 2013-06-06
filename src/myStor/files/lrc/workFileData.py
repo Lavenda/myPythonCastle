@@ -19,22 +19,26 @@ class WorkFile(object):
         self.shotName = ''
         self.sequenceName = ''
         self.filePath = ''
-        self.rootPath = ''
+        self.dirPath = ''
         self.modifyTime = 0.0
     
     
     def setFile(self, filePath):
         self.fileName = os.path.basename(filePath)
-        self.fileExt = os.path.splitext(filePath)
-        self.shotName = baseLrcFileOper.LrcFileOperation.getShotName(filePath)
+        self.fileExt = os.path.splitext(filePath)[1]
+        self.shotName = baseLrcFileOper.getShotName(filePath)
         self.filePath = filePath
-        self.rootPath = os.path.dirname(filePath)
+        self.dirPath = os.path.dirname(filePath)
         self.modifyTime = os.path.getmtime(filePath)
     
     
     def setStandardName(self, standardName):
-        self.standardName = standardName
+        self.standardName = self._setStandardName(standardName)
         self.sequenceName = self.standardName.split('_')[2]
+    
+    
+    def _setStandardName(self, standardName):
+        pass
     
     
     def initBeforeCopy(self, workFileAddrDic):
@@ -42,7 +46,7 @@ class WorkFile(object):
     
     
     def checkNaming(self):
-        if self.shotName != self.standardName:
+        if self.fileName != self.standardName:
             return False
         return self._checkSuffixNaming()
         
@@ -51,12 +55,11 @@ class WorkFile(object):
         pass
 
 
-    def renameFileName(self):
-        tagName = self.fileName.replace(self.shotName, self.standardName)
-        return baseLrcFileOper.LrcFileOperation.renameFileName(self.rootPath,
-                                                               self.fileName,
-                                                               tagName)
-    
+    def renameFileName(self, rootPath):
+        return baseLrcFileOper.copyStandardFile(rootPath,self.dirPath,
+                                                self.fileName,
+                                                self.standardName)
+
 
 
 class VideoFile(WorkFile):
@@ -75,6 +78,7 @@ class VideoFile(WorkFile):
 
 
     def initBeforeCopy(self, workFileAddrDic):
+        WorkFile.initBeforeCopy(self, workFileAddrDic)
         pictureSignName = self.shotName + '_picture'
         if pictureSignName in workFileAddrDic:
             self.pictureFile = workFileAddrDic[pictureSignName]
@@ -86,7 +90,13 @@ class VideoFile(WorkFile):
         return workFileAddrDic
     
     
+    def _setStandardName(self, standardName):
+        WorkFile._setStandardName(self, standardName)
+        return standardName + '_CMP' + self.fileExt
+    
+    
     def _checkSuffixNaming(self):
+        WorkFile._checkSuffixNaming(self)
         suffixName = self.fileName[len(self.shotName):]
         if suffixName.startswith('_CMP'):
             return True
@@ -105,7 +115,13 @@ class PictureFile(WorkFile):
         WorkFile.__init__(self)
     
     
+    def _setStandardName(self, standardName):
+        WorkFile._setStandardName(self, standardName)
+        return standardName + '_LGT' + self.fileExt
+    
+    
     def _checkSuffixNaming(self):
+        WorkFile._checkSuffixNaming(self)
         suffixName = self.fileName[len(self.shotName):]
         if suffixName.startswith('_LGT'):
             return True

@@ -9,7 +9,7 @@ Created on 2013-6-4
 
 import os
 import time
-from odwlib.lrc.lrcQcFileOper import workFileData
+from odwlib.lrc import workFileData
 
 class LrcQcOperation(object):
     """

@@ -16,12 +16,13 @@ class WorkFileFactory(object):
         
     VIDEO_EXT = ['.mov']
     PICTURE_TEX = ['.exr', '.tif']
+    ILLEGAL_DIR = ['review', 'to_dw']
     
     
     def __init__(self):
         self.workFileAddrDic = {}
         self.signName = ''
-        self.shotCodeCaseDic = baseLrcFileOper.LrcFileOperation.getShotCodeCaseDic()
+        self.shotCodeCaseDic = baseLrcFileOper.getShotCodeCaseDic()
     
     
     def createWorkFile(self, filePath):
@@ -34,8 +35,7 @@ class WorkFileFactory(object):
         @return: a WorkFile object or its subclass
         """
         fileExt = self._getFileExt(filePath)
-        shotName = baseLrcFileOper.LrcFileOperation.getShotName(filePath)
-        shotName = self.__checkIsInDBAndGetStandardName(shotName)
+        shotName = self.isInDBAndGetStandardName(filePath)
         if not shotName:
             return None
         
@@ -48,8 +48,8 @@ class WorkFileFactory(object):
         else:
             workFile = None
         if workFile:
-            workFile.setStandardName(shotName)
             workFile.setFile(filePath)
+            workFile.setStandardName(shotName)
             self.workFileAddrDic[self.signName] = workFile
         return workFile
     
@@ -60,7 +60,8 @@ class WorkFileFactory(object):
         return fileExt
     
     
-    def __checkIsInDBAndGetStandardName(self, shotName):
+    def isInDBAndGetStandardName(self, filePath):
+        shotName = baseLrcFileOper.getShotName(filePath)
         return self.shotCodeCaseDic.get(shotName.lower(), None)
     
     
@@ -69,7 +70,10 @@ class WorkFileFactory(object):
         return self.signName not in self.workFileAddrDic
     
     
-    def isIllegalFile(self, fileName):
+    def isIllegalFileAndDir(self, fileName, dirName):
+        upperDir = dirName.split('\\')[-1]
+        if upperDir in self.ILLEGAL_DIR:
+            return True
         fileExt = self._getFileExt(fileName)
         if fileExt not in (self.PICTURE_TEX + self.VIDEO_EXT):
             return True
