@@ -99,7 +99,7 @@ class CheckLocalDirNaming(object):
         for workFileObj in unStandardObjList:
             self.__printAndWrite('----------------')
             self.__printAndWrite(workFileObj.filePath)
-            standardPath = workFileObj.renameFileName(rootPath)
+            standardPath = workFileObj.renameAndCopyFileName(rootPath)
             if standardPath:
                 self.__printAndWrite('-> ' + str(standardPath))
 

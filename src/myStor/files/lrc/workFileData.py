@@ -24,6 +24,12 @@ class WorkFile(object):
     
     
     def setFile(self, filePath):
+        """
+        set the attributes of this object
+        
+        @param filePath: the file path
+        @type filePath: string type
+        """
         self.fileName = os.path.basename(filePath)
         self.fileExt = os.path.splitext(filePath)[1]
         self.shotName = baseLrcFileOper.getShotName(filePath)
@@ -33,6 +39,12 @@ class WorkFile(object):
     
     
     def setStandardName(self, standardName):
+        """
+        set the standardName and sequenceName attribute
+        
+        @param standardName: the standard name of the file
+        @type standardName: string type
+        """
         self.standardName = self._setStandardName(standardName)
         self.sequenceName = self.standardName.split('_')[2]
     
@@ -42,6 +54,11 @@ class WorkFile(object):
     
     
     def initBeforeCopy(self, workFileAddrDic):
+        """
+        before the copy, have some preprocess
+        @param workFileAddrDic: the address dictionary of the workFile object 
+        @type workFileAddrDic: dictionary type
+        """
         return workFileAddrDic
     
     
@@ -55,8 +72,11 @@ class WorkFile(object):
         pass
 
 
-    def renameFileName(self, rootPath):
-        return baseLrcFileOper.copyStandardFile(rootPath,self.dirPath,
+    def renameAndCopyFileName(self, rootPath):
+        """
+        rename the file in this object and copy it to a standard directory
+        """
+        return baseLrcFileOper.copyStandardFile(rootPath, self.dirPath,
                                                 self.fileName,
                                                 self.standardName)
 

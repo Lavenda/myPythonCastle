@@ -40,10 +40,10 @@ class WorkFileFactory(object):
             return None
         
         if (fileExt in self.VIDEO_EXT and 
-            self.__isRepeatInAddrDic(shotName, '_video')):
+            self._isRepeatInAddrDic(shotName, '_video')):
             workFile = workFileData.VideoFile()
         elif (fileExt in self.PICTURE_TEX and 
-              self.__isRepeatInAddrDic(shotName, '_picture')):
+              self._isRepeatInAddrDic(shotName, '_picture')):
             workFile = workFileData.PictureFile()
         else:
             workFile = None
@@ -55,22 +55,34 @@ class WorkFileFactory(object):
     
     
     def _getFileExt(self, filePath):
+        """
+        get the extension name from filePath
+        """
         fileExt = os.path.splitext(filePath)
         fileExt = fileExt[1].lower()
         return fileExt
     
     
     def isInDBAndGetStandardName(self, filePath):
+        """
+        check this file is exist in the database or not.
+        """
         shotName = baseLrcFileOper.getShotName(filePath)
         return self.shotCodeCaseDic.get(shotName.lower(), None)
     
     
-    def __isRepeatInAddrDic(self, shotName, fileType):
+    def _isRepeatInAddrDic(self, shotName, fileType):
+        """
+        check this object is exist in the object address dictionary or not
+        """
         self.signName = shotName + fileType
         return self.signName not in self.workFileAddrDic
     
     
     def isIllegalFileAndDir(self, fileName, dirName):
+        """
+        check this file or directory is illegal or not
+        """
         upperDir = dirName.split('\\')[-1]
         if upperDir in self.ILLEGAL_DIR:
             return True
@@ -81,6 +93,9 @@ class WorkFileFactory(object):
             return False
     
     def getWorkFileAddrDic(self):
+        """
+        get the Workfile object address dictionary
+        """
         return self.workFileAddrDic
 
 
