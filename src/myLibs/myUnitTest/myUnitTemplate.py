@@ -1,3 +1,6 @@
+#!/usr/bin/env python2.6
+#-*- coding: utf-8 -*-
+
 """
 Created on 2013-5-8
 
@@ -9,8 +12,7 @@ Created on 2013-5-8
     In future, there are more and more template will be created and offerded
     
 """
-#!/usr/bin/env python2.6
-# -*- coding: utf-8 -*-
+
 
 CLASS_TEMPLATE = u"""
 import unittest

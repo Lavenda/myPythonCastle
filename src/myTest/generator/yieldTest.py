@@ -1,3 +1,6 @@
+#!/usr/bin/env python2.6
+#-*- coding: utf-8 -*-
+
 """
 Created on 2013-5-15
 
@@ -82,7 +85,7 @@ def read_file(fpath):
 if __name__ == '__main__':
 #    for n in fab5(10):
 #        print n
-#    for n in read_file(r'C:\Users\huangchengqi\Desktop\Article.uml'):
+#    for n in read_file(r'C:\Users\lavenda\Desktop\Article.uml'):
 #        print n
 #    assert  1==2
     pass

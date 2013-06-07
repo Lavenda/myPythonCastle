@@ -1,5 +1,7 @@
+
 #!/usr/bin/env python2.6
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
+
 """
 Created on 2013-5-13
 
@@ -26,7 +28,7 @@ class EnvPrecheck(object):
     PLUGIN_FOLDER = ['//server-cgi/workflowtools_ep20']
     
     MAYA_VERSION = '2012-x64'
-    STANDARD_ACCOUNTS = ['renderfarm', 'huangchengqi']
+    STANDARD_ACCOUNTS = ['renderfarm', 'lavenda']
     
     def __init__(self):
         self.resultStrList = []

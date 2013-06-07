@@ -1,5 +1,7 @@
+
 #!/usr/bin/env python2.6
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
+
 """
 Created on 2013-5-13
 
@@ -66,4 +68,4 @@ def isExistAndOpen(srcPath, countOfOpenInDir=6):
 
 
 if __name__ == '__main__':
-    print isExistAndOpen(srcPath=r'C:\Users\huangchengqi\Desktop\a')
+    print isExistAndOpen(srcPath=r'C:\Users\lavenda\Desktop\a')

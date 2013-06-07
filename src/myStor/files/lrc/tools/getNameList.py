@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+#!/usr/bin/env python2.6
+#-*- coding: utf-8 -*-
+
+"""
 Created on 2013-5-3
 
 @author: lavenda
-'''
+"""
 
 import os, sys
 

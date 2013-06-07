@@ -1,11 +1,13 @@
+#!/usr/bin/env python2.6
+#-*- coding: utf-8 -*-
+
 """
 Created on 2013-5-6
 
 @author: lavenda
 """
 
-#!/usr/bin/env python2.6
-# -*- coding: utf-8 -*-
+
 def timer(func, count=1, every=1, *args, **kwargs):
     """
     This method is used to calculate time of the progarm you run.

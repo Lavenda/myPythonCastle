@@ -1,25 +1,26 @@
 #!/usr/bin/env python2.6
-# -*- coding: utf-8 -*-
-'''
+#-*- coding: utf-8 -*-
+
+"""
 Created on 2012-10-24
 
 @author: lavenda
-'''
+"""
 
 
 
 from odwlib.tactic.server.base import dbHelper
 
 class BaseDAO(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
 
     def __init__(self):
-        '''
+        """
         Constructor
-        '''
+        """
         pass
     
     

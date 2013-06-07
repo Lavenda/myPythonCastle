@@ -1,11 +1,14 @@
 #!/usr/bin/env python2.6
 #  -*- coding: utf-8 -*-
 
-'''
+#!/usr/bin/env python2.6
+#-*- coding: utf-8 -*-
+
+"""
 Created on 2012-10-09
 
 @author: lavenda
-'''
+"""
 
 
 
@@ -13,9 +16,9 @@ import os
 from xml.dom import minidom
 
 class XmlConfig(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     def __init__(self,project_name=None):
         self.project_name = project_name

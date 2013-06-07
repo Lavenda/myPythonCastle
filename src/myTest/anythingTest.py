@@ -1,8 +1,11 @@
-'''
+#!/usr/bin/env python2.6
+#-*- coding: utf-8 -*-
+
+"""
 Created on 2013-5-23
 
 @author: lavenda
-'''
+"""
 
 
 def _main(*args, **kwargs):
@@ -27,7 +30,7 @@ def maxTest():
     print c
 
 def openTest():
-    a = open(r'C:\Users\huangchengqi\Documents\maya\2012-x64\maya.env', 'r')
+    a = open(r'C:\Users\lavenda\Documents\maya\2012-x64\maya.env', 'r')
     print a.next()
     print a.next()
     a.close()
@@ -50,23 +53,23 @@ def fileSuffixTest():
     
 def osStatTest():
     import os
-    path = r'C:\Users\huangchengqi\Desktop\a\DRGN_2007_s05_A058_CMP_V01.mov'
+    path = r'C:\Users\lavenda\Desktop\a\DRGN_2007_s05_A058_CMP_V01.mov'
     print os.stat(path)
-    path = r'C:\Users\huangchengqi\Desktop\a\DRGN_2007_s05_A058_CMP_V02.mov'
+    path = r'C:\Users\lavenda\Desktop\a\DRGN_2007_s05_A058_CMP_V02.mov'
     print os.stat(path)
     
     
 def osGetmtimeTest():
     import os 
-    path = r'C:\Users\huangchengqi\Desktop\a\DRGN_2007_s05_A058_CMP_V01.mov'
+    path = r'C:\Users\lavenda\Desktop\a\DRGN_2007_s05_A058_CMP_V01.mov'
     print os.path.getmtime(path)
-    path = r'C:\Users\huangchengqi\Desktop\a\DRGN_2007_s05_A058_CMP_V02.mov'
+    path = r'C:\Users\lavenda\Desktop\a\DRGN_2007_s05_A058_CMP_V02.mov'
     print type(os.path.getmtime(path))
     print type(0.0)
     
 def sequenceTest():
     import os
-    path = r'C:\Users\huangchengqi\Desktop\a\DRGN_2007_s05_A058_CMP_V01.mov'
+    path = r'C:\Users\lavenda\Desktop\a\DRGN_2007_s05_A058_CMP_V01.mov'
     fileName = os.path.basename(path)
     shotName = fileName[0:17]
     sequence = shotName.split('_')[2]
