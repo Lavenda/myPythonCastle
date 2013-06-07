@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+encoding//src/myStor/deadline/envPrecheck.py=utf-8
+encoding//src/myStor/deadline/fileOper.py=utf-8
+encoding//src/myStor/files/lrc/baseWorkFileHandler.py=utf-8
+encoding//src/myStor/files/lrc/tools/checkLocalDirNaming.py=utf-8
+encoding//src/myStor/files/renameFile.py=utf-8

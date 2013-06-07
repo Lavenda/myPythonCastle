@@ -95,9 +95,9 @@ def renameFile(rootPath, srcName, tagName):
     """
     srcPath = os.path.join(rootPath, srcName)
     if os.path.isfile(srcPath):
-        tagPath = os.path.join(rootPath, 'standard', tagName) 
+        tagPath = srcPath.replace(srcName, tagName)
         try:
-            shutil.copy(srcPath, tagPath)
+            shutil.move(srcPath, tagPath)
             pass
         except Exception, e:
             print '<%s> is error' % srcPath

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT tactic (tactic_client*,tactic_server,tactic_DB,main_project_name,project_detail)>
+
+<!ELEMENT tactic_client (#PCDATA)>
+
+<!ELEMENT tactic_server (server_ip,login_user,login_password)>
+	<!ELEMENT server_ip (#PCDATA)>
+	<!ELEMENT login_user (#PCDATA)>
+	<!ELEMENT login_password (#PCDATA)>
+	
+<!ELEMENT tactic_postgresql (db_type,host,user,password,port)>
+	<!ELEMENT db_type (#PCDATA)>
+	<!ELEMENT host (#PCDATA)>
+	<!ELEMENT user (#PCDATA)>
+	<!ELEMENT password (#PCDATA)>
+	<!ELEMENT port (#PCDATA)>
+	
+<!ELEMENT main_project_name (#PCDATA)>
+
+<!ELEMENT project_detail (asset_schema*)>
+	<!ATTLIST project_detail
+	name CDATA #REQUIRED
+	>
+	<!ELEMENT asset_schema (schema_name,schema_lib*,task_detail?)>
+		<!ATTLIST asset_schema
+		plugin_type CDATA #REQUIRED
+		>
+		<!ELEMENT schema_name (#PCDATA)>
+			<!ATTLIST schema_name
+			CN_name CDATA #IMPLIED
+			>
+		<!ELEMENT schema_lib (lib_name,column_name)>
+			<!ELEMENT lib_name (#PCDATA)>
+				<!ATTLIST lib_name
+				CN_name CDATA #IMPLIED
+				>
+			<!ELEMENT column_name (#PCDATA)>
+		<!ELEMENT task_detail (context,status)>
+			<!ELEMENT context (context_node*)>
+				<!ELEMENT context_node (#PCDATA)>
+			<!ELEMENT status (status_node*)>
+				<!ELEMENT status_node (#PCDATA)>
+			
+			
+		
+		

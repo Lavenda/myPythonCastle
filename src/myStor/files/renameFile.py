@@ -1,11 +1,10 @@
+#!/usr/bin/env python2.6
+#-*- coding:utf-8 -*-
 """
 Created on 2013-3-21
 
 @author: lavenda
 """
-
-#!/usr/bin/env python2.6
-#-*- coding:utf-8 -*-
 
 import os, shutil
 
@@ -37,5 +36,5 @@ def renameFile(dirPath, fileSuffix, srcStr, targetStr):
 
 
 if __name__ == '__main__':
-    renameFile(r'S:\E020DW\Data_ from_DW\preAsset\20130530', '.ma', 
-               '_RIG_HI2_02', '_HWS')
+    renameFile(r'S:\E020DW\Data_ from_DW\preAsset\20130607\cgfx\cgfxRigHi2\New', '.ma', 
+               '_RIG_HI2_01', '_HWS')

@@ -95,6 +95,13 @@ def listMergeTest():
 def stringListTest():
     a = 'DRGN_2007_S09_A142_CMP_v01.0100.tif'
     print a[0:18]
+
+def reTest():
+    import re
+    shotName = 'DRG09A142LMP01.0100.tif'
+    SHOT_RE = '^.*([0-9]{2}).*([A-Z][0-9]{3}[a-z]?).*$'
+    result = re.findall(SHOT_RE, shotName)
+    print result
     
 if __name__ == '__main__':
-    stringListTest()
+    reTest()

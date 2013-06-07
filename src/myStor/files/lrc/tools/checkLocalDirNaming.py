@@ -8,16 +8,18 @@ Created on 2013-6-5
 """
 
 import sys
-sys.path.append(r'//server-cgi/workflowtools_ep20')
-sys.path.append(r'//server-cgi/workflowtools_ep20/lib')
-#sys.path.append(r'D:\myPython\DW_EP20\digital37')
-#sys.path.append(r'D:\myPython\DW_EP20\digital37\lib')
+#sys.path.append(r'//server-cgi/workflowtools_ep20')
+#sys.path.append(r'//server-cgi/workflowtools_ep20/lib')
+sys.path.append(r'D:\myPython\DW_EP20\digital37')
+sys.path.append(r'D:\myPython\DW_EP20\digital37\lib')
 
 
 import os
 from odwlib.lrc import baseWorkFileHandler
 
 class CheckLocalDirNaming(object):
+    
+    STANDARD_DIR_LIST = ['review', 'to_dw']
 
     def __init__(self):
         self.workFileFactory = baseWorkFileHandler.WorkFileFactory()
@@ -39,10 +41,12 @@ class CheckLocalDirNaming(object):
         repeatFilePathList = []
         
         for rootDir, dirNameList, fileNameList in os.walk(localPath):
+            
+            if not self.__isStandardDir(rootDir):
+                continue
             for fileName in fileNameList:
-                
                 filePath = os.path.join(rootDir, fileName)
-                if self.workFileFactory.isIllegalFileAndDir(fileName, rootDir):
+                if self.workFileFactory.isIllegalFile(fileName):
                     continue
                 if not self.workFileFactory.isInDBAndGetStandardName(filePath):
                     filePathNotInDBList.append(filePath)
@@ -56,13 +60,22 @@ class CheckLocalDirNaming(object):
         unStandardObjList = self.__printErrorFilePathAndGetIntoList(workFileObjList)
         
         if self.__isStartRenameAndCopy():
-            self.__renameAndCopyUnStandardObj(unStandardObjList, localPath)
+            self.__renameUnStandardObj(unStandardObjList, localPath)
         
         self.__printFilePathNotInDB(filePathNotInDBList)
         self.__printRepeatFilePathList(repeatFilePathList)
         self.fileStream.close()
-
-
+    
+    
+    def __isStandardDir(self, dirPath):
+        isStandard = False
+        for standardDir in self.STANDARD_DIR_LIST:
+            if dirPath.endswith(standardDir):
+                print dirPath
+                isStandard = True
+        return isStandard
+    
+    
     def __printErrorFilePathAndGetIntoList(self, workFileObjList):
         """
         print the error file path list and add into a list
@@ -91,7 +104,7 @@ class CheckLocalDirNaming(object):
         else:
             return False
 
-    def __renameAndCopyUnStandardObj(self, unStandardObjList, rootPath):
+    def __renameUnStandardObj(self, unStandardObjList, rootPath):
         """
         rename the unstandard file and copy them to a standard dir
         """
@@ -99,7 +112,7 @@ class CheckLocalDirNaming(object):
         for workFileObj in unStandardObjList:
             self.__printAndWrite('----------------')
             self.__printAndWrite(workFileObj.filePath)
-            standardPath = workFileObj.renameAndCopyFileName(rootPath)
+            standardPath = workFileObj.renameFileName(rootPath)
             if standardPath:
                 self.__printAndWrite('-> ' + str(standardPath))
 

@@ -1,0 +1,340 @@
+<?xml version="1.0" ?>
+<!DOCTYPE tactic SYSTEM "tactic.dtd">
+
+
+<tactic>
+        
+    <tactic_client>E:/tactic/client</tactic_client>
+
+    <tactic_server>
+        <server_ip>192.168.16.79</server_ip>
+        <login_user>admin</login_user>
+        <login_password>1q2w3e4r</login_password>
+    </tactic_server>
+    
+    
+    <tactic_DB>
+        <db_type>postgresql</db_type>
+        <host>192.168.16.79</host>
+        <user>postgres</user>
+        <password>postgres</password>
+        <port>5432</port>
+    </tactic_DB>
+    
+    <main_project_name>E008DW</main_project_name>
+    
+    <project_detail name="E008DW">
+        
+    <!-- ******************************************************************************* -->
+        <asset_schema plugin_type="asset">
+            <schema_name CN_name="DW09 角色">E008DW/dw09_asset_chr</schema_name>
+        
+            <schema_lib>
+                <lib_name CN_name="角色分类">E008DW/dw09_chr_type1</lib_name>
+                <column_name>dw09_chr_type1</column_name>
+            </schema_lib>
+            
+            <schema_lib>
+                <lib_name CN_name="角色子类">E008DW/dw09_chr_type2</lib_name>
+                <column_name>dw09_chr_type2</column_name>
+            </schema_lib>
+        
+            <task_detail>
+                <context>
+                    <context_node>MDL_HI</context_node>
+                    <context_node>RIG_HI</context_node>
+                    <context_node>TEX_HI</context_node>
+                    <context_node>PRX</context_node>
+                    <context_node>MSTR</context_node>
+                    <context_node>RIG_PRX</context_node>
+                </context>
+            
+                <status>
+                    <status_node>Pending</status_node>
+                    <status_node>Updated</status_node>
+                    <status_node>Approved</status_node>
+                </status>
+            </task_detail>
+        </asset_schema>
+
+
+    <!-- ******************************************************************************* -->
+        <asset_schema plugin_type="asset">
+            <schema_name CN_name="DW09 道具">E008DW/dw09_asset_prop</schema_name>
+        
+            <schema_lib>
+                <lib_name CN_name="道具分类">E008DW/dw09_prop_type1</lib_name>
+                <column_name>dw09_prop_type1</column_name>
+            </schema_lib>
+            
+            <schema_lib>
+                <lib_name CN_name="道具子类">E008DW/dw09_prop_type2</lib_name>
+                <column_name>dw09_prop_type2</column_name>
+            </schema_lib>
+        
+            <task_detail>
+                <context>
+                    <context_node>MDL_HI</context_node>
+                    <context_node>RIG_HI</context_node>
+                    <context_node>TEX_HI</context_node>
+                    <context_node>PRX</context_node>
+                    <context_node>MSTR</context_node>
+                </context>
+            
+                <status>
+                    <status_node>Pending</status_node>
+                    <status_node>Updated</status_node>
+                    <status_node>Approved</status_node>
+                </status>
+            </task_detail>
+        </asset_schema>
+    
+<!-- ******************************************************************************* -->
+        <asset_schema plugin_type="asset">
+            <schema_name CN_name="DW09 环境">E008DW/dw09_asset_env</schema_name>
+        
+            <schema_lib>
+                <lib_name CN_name="环境分类">E008DW/dw09_env_type1</lib_name>
+                <column_name>dw09_env_type1</column_name>
+            </schema_lib>
+            
+            <schema_lib>
+                <lib_name CN_name="环境子类">E008DW/dw09_env_type2</lib_name>
+                <column_name>dw09_env_type2</column_name>
+            </schema_lib>
+        
+            <task_detail>
+                <context>
+                    <context_node>MDL_HI</context_node>
+                    <context_node>TEX_HI</context_node>
+                    <context_node>PRX</context_node>
+                    <context_node>MSTR</context_node>
+                </context>
+            
+                <status>
+                    <status_node>Pending</status_node>
+                    <status_node>Updated</status_node>
+                    <status_node>Approved</status_node>
+                </status>
+            </task_detail>
+        </asset_schema>
+
+
+<!-- ******************************************************************************* -->
+        <asset_schema plugin_type="asset">
+            <schema_name CN_name="DW09 交通工具">E008DW/dw09_asset_vehcl</schema_name>
+        
+            <schema_lib>
+                <lib_name CN_name="交通分类">E008DW/dw09_vehcl_type1</lib_name>
+                <column_name>dw09_vehcl_type1</column_name>
+            </schema_lib>
+        
+            <task_detail>
+                <context>
+                    <context_node>MDL_HI</context_node>
+                    <context_node>TEX_HI</context_node>
+                    <context_node>RIG_HI</context_node>
+                    <context_node>PRX</context_node>
+                    <context_node>MSTR</context_node>
+                </context>
+            
+                <status>
+                    <status_node>Pending</status_node>
+                    <status_node>Updated</status_node>
+                    <status_node>Approved</status_node>
+                </status>
+            </task_detail>
+        </asset_schema>
+
+<!-- ******************************************************************************* -->
+        <asset_schema plugin_type="shot">
+            <schema_name CN_name="DW09 镜头">E008DW/dw09_shot</schema_name>
+        
+            <schema_lib>
+                <lib_name CN_name="剧集">E008DW/dw09_episode</lib_name>
+                <column_name>dw09_episode</column_name>
+            </schema_lib>
+
+            <schema_lib>
+                <lib_name CN_name="场次">E008DW/dw09_sequence</lib_name>
+                <column_name>dw09_sequence</column_name>
+            </schema_lib>
+        
+            <task_detail>
+                <context>
+                    <context_node>LGT</context_node>
+                    <context_node>ANI_Review</context_node>
+                    <context_node>SIM_Review</context_node>
+                </context>
+            
+                <status>
+                    <status_node>Pending</status_node>
+                    <status_node>Updated</status_node>
+                    <status_node>Approved</status_node>
+                </status>
+            </task_detail>
+        </asset_schema>
+        
+    </project_detail>
+    
+<!-- ############################################################################################################ -->
+    <project_detail name="e020dw">
+        
+    <!-- ******************************************************************************* -->
+    <asset_schema plugin_type="asset">
+      <schema_name CN_name="角色">e020dw/asset_chr</schema_name>
+    
+      <schema_lib>
+        <lib_name CN_name="角色分类">e020dw/chr_type1</lib_name>
+        <column_name>chr_type1</column_name>
+      </schema_lib>
+      
+      <schema_lib>
+        <lib_name CN_name="角色子类">e020dw/chr_type2</lib_name>
+        <column_name>chr_type2</column_name>
+      </schema_lib>
+    
+      <task_detail>
+        <context>
+          <context_node>MDL_HI</context_node>
+          <context_node>TEX_HI</context_node>
+          <context_node>PRX</context_node>
+          <context_node>MSTR</context_node>
+          <context_node>RIG_PRX</context_node>
+          <context_node>RIG_HI2</context_node>
+        </context>
+      
+        <status>
+          <status_node>Pending</status_node>
+          <status_node>Updated</status_node>
+          <status_node>Approved</status_node>
+        </status>
+      </task_detail>
+    </asset_schema>
+
+
+  <!-- ******************************************************************************* -->
+    <asset_schema plugin_type="asset">
+      <schema_name CN_name="道具">e020dw/asset_prop</schema_name>
+    
+      <schema_lib>
+        <lib_name CN_name="道具分类">e020dw/prop_type1</lib_name>
+        <column_name>prop_type1</column_name>
+      </schema_lib>
+      
+      <schema_lib>
+        <lib_name CN_name="道具子类">e020dw/prop_type2</lib_name>
+        <column_name>prop_type2</column_name>
+      </schema_lib>
+    
+      <task_detail>
+        <context>
+          <context_node>MDL_HI</context_node>
+          <context_node>RIG_HI</context_node>
+          <context_node>TEX_HI</context_node>
+          <context_node>PRX</context_node>
+          <context_node>MSTR</context_node>
+        </context>
+      
+        <status>
+          <status_node>Pending</status_node>
+          <status_node>Updated</status_node>
+          <status_node>Approved</status_node>
+        </status>
+      </task_detail>
+    </asset_schema>
+  
+<!-- ******************************************************************************* -->
+    <asset_schema plugin_type="asset">
+      <schema_name CN_name="环境">e020dw/asset_env</schema_name>
+    
+      <schema_lib>
+        <lib_name CN_name="环境分类">e020dw/env_type1</lib_name>
+        <column_name>env_type1</column_name>
+      </schema_lib>
+      
+      <schema_lib>
+        <lib_name CN_name="环境子类">e020dw/env_type2</lib_name>
+        <column_name>env_type2</column_name>
+      </schema_lib>
+    
+      <task_detail>
+        <context>
+          <context_node>MDL_HI</context_node>
+          <context_node>RIG_HI</context_node>
+          <context_node>TEX_HI</context_node>
+          <context_node>PRX</context_node>
+          <context_node>MSTR</context_node>
+        </context>
+      
+        <status>
+          <status_node>Pending</status_node>
+          <status_node>Updated</status_node>
+          <status_node>Approved</status_node>
+        </status>
+      </task_detail>
+    </asset_schema>
+
+
+<!-- ******************************************************************************* -->
+    <asset_schema plugin_type="asset">
+      <schema_name CN_name="交通工具">e020dw/asset_vehcl</schema_name>
+    
+      <schema_lib>
+        <lib_name CN_name="交通分类">e020dw/vehcl_type1</lib_name>
+        <column_name>vehcl_type1</column_name>
+      </schema_lib>
+    
+      <task_detail>
+        <context>
+          <context_node>MDL_HI</context_node>
+          <context_node>TEX_HI</context_node>
+          <context_node>RIG_HI</context_node>
+          <context_node>PRX</context_node>
+          <context_node>MSTR</context_node>
+        </context>
+      
+        <status>
+          <status_node>Pending</status_node>
+          <status_node>Updated</status_node>
+          <status_node>Approved</status_node>
+        </status>
+      </task_detail>
+    </asset_schema>
+
+<!-- ******************************************************************************* -->
+    <asset_schema plugin_type="shot">
+      <schema_name CN_name="镜头">e020dw/shot</schema_name>
+    
+      <schema_lib>
+        <lib_name CN_name="剧集">e020dw/episode</lib_name>
+        <column_name>episode</column_name>
+      </schema_lib>
+
+      <schema_lib>
+        <lib_name CN_name="场次">e020dw/sequence</lib_name>
+        <column_name>sequence</column_name>
+      </schema_lib>
+    
+      <task_detail>
+        <context>
+          <context_node>LAY</context_node>
+          <context_node>LAY_Review</context_node>
+          <context_node>LGT</context_node>
+          <context_node>ANI_Review</context_node>
+          <context_node>SIM_Review</context_node>
+        </context>
+      
+        <status>
+          <status_node>Pending</status_node>
+          <status_node>Updated</status_node>
+          <status_node>Approved</status_node>
+        </status>
+      </task_detail>
+    </asset_schema>
+    
+  </project_detail>
+
+
+
+</tactic>

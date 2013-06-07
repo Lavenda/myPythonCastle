@@ -79,13 +79,17 @@ class WorkFileFactory(object):
         return self.signName not in self.workFileAddrDic
     
     
-    def isIllegalFileAndDir(self, fileName, dirName):
+    def isIllegalDir(self, dirName):
         """
-        check this file or directory is illegal or not
+        check this directory is illegal or not
         """
-        upperDir = dirName.split('\\')[-1]
-        if upperDir in self.ILLEGAL_DIR:
-            return True
+        return dirName in self.ILLEGAL_DIR
+    
+    
+    def isIllegalFile(self, fileName):
+        """
+        check this file is illegal or not
+        """
         fileExt = self._getFileExt(fileName)
         if fileExt not in (self.PICTURE_TEX + self.VIDEO_EXT):
             return True

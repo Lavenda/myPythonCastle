@@ -72,13 +72,12 @@ class WorkFile(object):
         pass
 
 
-    def renameAndCopyFileName(self, rootPath):
+    def renameFileName(self, rootPath):
         """
         rename the file in this object and copy it to a standard directory
         """
-        return baseLrcFileOper.copyStandardFile(rootPath, self.dirPath,
-                                                self.fileName,
-                                                self.standardName)
+        return baseLrcFileOper.renameFile(self.dirPath, self.fileName,
+                                         self.standardName)
 
 
 
