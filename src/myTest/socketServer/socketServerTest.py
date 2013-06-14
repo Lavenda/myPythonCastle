@@ -6,8 +6,6 @@ Created on 2013-5-20
 
 @author: lavenda
 """
-#!/usr/bin/env python2.6
-# -*- utf-8
 
 from SocketServer import ThreadingTCPServer
 from SocketServer import StreamRequestHandler

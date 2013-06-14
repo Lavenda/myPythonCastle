@@ -106,5 +106,36 @@ def reTest():
     result = re.findall(SHOT_RE, shotName)
     print result
     
+def popenTest():
+    import os
+    print os.popen('dir').read()
+    
+def osNameTest():
+    import os
+    print os.name
+    
+def getEnvTest():
+    import os
+    print os.environ
+    print os.getenv('computername')
+    
+def getpassTest():
+    import getpass
+    print getpass.getpass()
+    
+def reMatchTest():
+    import re
+    hostnameRe = '^render-[0-90]{3}$'
+    hostname = 'render-000'
+    print re.match(hostnameRe, hostname)
+    
+def osRenameTest():
+    import os, shutil
+    srcPath = r'C:\Users\huangchengqi\Documents\maya\2012-x64\a'
+    tagPath = r'C:\Users\huangchengqi\Documents\maya\2012-x64\b'
+    rmtreeResult = shutil.rmtree(tagPath)
+    renameResult = os.rename(srcPath, tagPath)
+    print rmtreeResult, renameResult
+
 if __name__ == '__main__':
-    reTest()
+    osRenameTest()

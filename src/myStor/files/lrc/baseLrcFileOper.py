@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python2.6
 #-*- coding: utf-8 -*-
 
@@ -10,16 +9,27 @@ Created on 2013-6-4
 
 import shutil
 import os 
-
+from odwlib.rv import rvio
 
     
 def copyFile(srcPath, tagPath):
     """
     copy the file 
+    
+    @param srcPath: the path of the source file you want to copy
+    @type srcPath: string type
+    @param tagPath: the path of the target file where you want to copy to
+    @type srcPath: string type
+    
+    @return: copy success or not
+    @rtype: boolean type
     """
-    if not (os.path.isfile(srcPath) and os.path.isfile(tagPath)):
-        print '%s or %s is not exist.' % (srcPath, tagPath)
+    tagDirPath = os.path.dirname(tagPath)
+    if not os.path.isfile(srcPath):
+        print '%s is not exist.' % srcPath
         return False
+    if not os.path.isdir(tagDirPath):
+        os.makedirs(tagDirPath)
     try:
         shutil.copy(srcPath, tagPath)
     except:
@@ -45,17 +55,26 @@ def removeFile(tagPath):
 
 
 
-def getSingleFrame(LrcFile):
+def getSingleFrame(videoFilePath, tagFilePath):
     """
     get first frame from the shot file
     """
-    if LrcFile.fileType == '.mov':
-        'run get single frame'
-        pass
+    isSuccess = False
+    fileExt = os.path.splitext(videoFilePath)[1]
+    if fileExt == '.mov':
+        try:
+            isSuccess = rvio.getImageFromMov(inMov=videoFilePath, outImage=tagFilePath)
+        except Exception, e:
+            print e
+            return False
+    return isSuccess
 
 
 
 def getShotCodeCaseDic():
+    """
+    get a small case to big case dictionary from the database
+    """
     from odwlib.tactic.server.biz import shotBiz 
     shotBizObj = shotBiz.ShotBiz()
     shotCodeList =  shotBizObj.getShotCodeList()
@@ -78,15 +97,15 @@ def getShotName(srcPath):
 
 
 
-def compareFiles(srcLrcFile, tagLrcFile):
+def compareFiles(srcFileModifyTime, tagFilePath):
     """
     compare the modify time and its shot name between the two shot files.
     """
-    if srcLrcFile.modifyTime <= tagLrcFile.modifyTime:
+    
+    if srcFileModifyTime <= os.path.getmtime(tagFilePath):
         return False
-    if srcLrcFile.shotName != tagLrcFile.shotName:
-        return False
-    return True
+    else:
+        return True
 
 
 
@@ -99,26 +118,6 @@ def renameFile(rootPath, srcName, tagName):
         tagPath = srcPath.replace(srcName, tagName)
         try:
             shutil.move(srcPath, tagPath)
-            pass
-        except Exception, e:
-            print '<%s> is error' % srcPath
-            return e
-        return tagPath
-
-
-
-def copyStandardFile(rootDir, rootPath, srcName, tagName):
-    
-    srcPath = os.path.join(rootPath, srcName)
-    if os.path.isfile(srcPath):
-        tagPath = os.path.join(rootPath, tagName)
-        tagPath = tagPath.replace(rootDir, rootDir+'\\standard')
-        tagDir = os.path.dirname(tagPath)
-        if not os.path.isdir(tagDir):
-            os.makedirs(tagDir)
-        try:
-            shutil.copy(srcPath, tagPath)
-            pass
         except Exception, e:
             print '<%s> is error' % srcPath
             return e

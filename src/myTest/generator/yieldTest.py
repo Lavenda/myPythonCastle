@@ -7,8 +7,6 @@ Created on 2013-5-15
 @author: lavenda
 """
 
-#!/usr/bin/env python2.6
-# -*- coding:uft-8 -*-
 
 def fab(max): 
     n, a, b = 0, 0, 1 

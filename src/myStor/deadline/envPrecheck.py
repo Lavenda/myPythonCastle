@@ -1,7 +1,5 @@
-
 #!/usr/bin/env python2.6
-#-*- coding: utf-8 -*-
-
+# -*- coding: utf-8 -*-
 """
 Created on 2013-5-13
 
@@ -13,12 +11,14 @@ import os
 import ctypes
 import shutil
 import filecmp
+import getpass
+import re
 from ctypes.wintypes import MAX_PATH
-import fileOper
+from odwlib.deadline.envPreCheck import fileOper
 
 
 class EnvPrecheck(object):
-
+    """the deadline env precheck"""
     
     SERVER = ['//server-cgi/project']
     MAYA_ENV_FILE = ['//server-cgi/workflowtools_ep20/Install/Maya.env']
@@ -28,7 +28,10 @@ class EnvPrecheck(object):
     PLUGIN_FOLDER = ['//server-cgi/workflowtools_ep20']
     
     MAYA_VERSION = '2012-x64'
-    STANDARD_ACCOUNTS = ['renderfarm', 'lavenda']
+    STANDARD_ACCOUNTS = ['renderfarm', 'huangchengqi']
+    HOSTNAME_RE = '^render-[0-9]{2,3}$'
+    MAYABATCH_PATH = '"C:/Program Files/Autodesk/Maya2012/bin/mayabatch.exe"'
+    
     
     def __init__(self):
         self.resultStrList = []
@@ -43,6 +46,7 @@ class EnvPrecheck(object):
             3. check whether the ShaveNode.mll file is right.
             4. check whether the texture files is readable.
             5. check whether the plugin folder is readable.
+            6. remove the 'prefs' directory, when the hostname is render-XXX
         And a single step:
          - check whether the maya file is readable.
         
@@ -55,30 +59,85 @@ class EnvPrecheck(object):
 #            return False
         self._writeIntoResultStringByType('*********************'
                                           '*********************')
-        if not self._checkRenderMayaEnvFile():
+        self._showMayaVersion()
+        userName, hostname = self._getAndShowUserAndHostname()
+        mayaDocumentsPath = self._getMayaDocumentsPath()
+        if not self._checkRenderMayaEnvFile(userName, mayaDocumentsPath):
             self._writeIntoResultStringByType('MayaEnvError', 
                                               'error')
-#            return 'MayaEnvError'
             isAllRight = False
         if not self._checkMayaShaveNodeFile():
             self._writeIntoResultStringByType('ShaveNodeFileError', 
                                               'error')
-#            return 'ShaveNodeFileError'
             isAllRight = False
         if not self._checkSourceImagesOnServer():
             self._writeIntoResultStringByType('SourceImagesOnServerError', 
                                               'error')
-#            return 'SourceImagesOnServerError'
             isAllRight = False
         if not self._checkPluginFolderOnServer():
             self._writeIntoResultStringByType('PluginFolderError', 
                                               'error')
-#            return 'PluginFolderError'
             isAllRight = False
+        if self._isRenderHost(hostname):
+            isAllRight = self._removePrefs(mayaDocumentsPath)
         self._writeIntoResultStringByType('*********************'
                                           '*********************')
         
         return isAllRight
+    
+    
+    def _showMayaVersion(self):
+        command = self.MAYABATCH_PATH + ' -v'
+        result = os.popen(command).read().strip()
+        self._writeIntoResultStringByType('*** <%s> ***'
+                                          % result)
+    
+    
+    def _getAndShowUserAndHostname(self):
+        """
+        get and print current account and hostname in command line
+        """
+        currentAccount = self._getUserName()
+        hostName = self._getHostname()
+        
+        self._writeIntoResultStringByType('*** <%s> is current account. ***' 
+                                    % currentAccount)
+        self._writeIntoResultStringByType('*** <%s> is the hostname. ***' 
+                                    % hostName)
+        return currentAccount, hostName
+    
+    
+    def _getUserName(self):
+        """
+        get the user name
+        
+        @return: string type
+        """
+        return getpass.getuser()
+    
+    
+    def _getHostname(self):
+        """
+        get the hostname
+        
+        @return: string type
+        """
+        return os.getenv('computername')
+    
+    
+    def _getMayaDocumentsPath(self):
+        """
+        get user's documents:
+        Example: C:\Users\username\Documents
+        """
+        dll = ctypes.windll.shell32
+        buf = ctypes.create_unicode_buffer(MAX_PATH + 1)
+        if dll.SHGetSpecialFolderPathW(None, buf, 0x0005, False):
+            return os.path.join(buf.value, 'maya', self.MAYA_VERSION)
+        else:
+            self._writeIntoResultStringByType('get user documents Failure!',
+                                              'error')
+            return None
     
     
     def backResultStrList(self):
@@ -93,7 +152,7 @@ class EnvPrecheck(object):
         take the result string into a result list by its type
         
         @param resultStr: a result string from a check
-        @type resultStr: string type
+        @type resultStr: string type L{fileOper}
         @param strType:  a type string of messages to print style.
         @type strType: string type
         
@@ -133,18 +192,13 @@ class EnvPrecheck(object):
         return None 
     
     
-    def _checkRenderMayaEnvFile(self):
+    def _checkRenderMayaEnvFile(self, currentAccount, mayaDocumentsPath):
         """
         only check the maya env file in render farm account.
         """
         
-        userDocumentsPath = self._getUserDocuments()
-        myMayaEnvFile = os.path.join(userDocumentsPath, 'maya',
-                                     self.MAYA_VERSION, 'maya.env')
-        currentAccount = userDocumentsPath.encode('utf-8').split('\\')[2]
+        myMayaEnvFile = os.path.join(mayaDocumentsPath, 'maya.env')
         
-        self._writeIntoResultStringByType('*** <%s> is current account. ***' 
-                                    % currentAccount)
         self._writeIntoResultStringByType('-> check the Maya Env File', 'l1')
         self._checkAndCopyMayaEnvFile(myMayaEnvFile)
         
@@ -152,7 +206,7 @@ class EnvPrecheck(object):
         if isRight:
             return isRight
         else:
-            if self._isStandardAccount(userDocumentsPath):
+            if self._isStandardAccount(currentAccount):
                 if self._copyAndBackupMayaEnvFile(myMayaEnvFile):
                     isRight = self._checkMayaEnvFile(myMayaEnvFile)
             else:
@@ -190,14 +244,14 @@ class EnvPrecheck(object):
                 self._writeIntoResultStringByType('<%s> is not right' 
                                                   % myMayaEnvFile, 'error')
                 return False
-        except:
+        except Exception:
             self._writeIntoResultStringByType('open maya env error', 'error')
         self._writeIntoResultStringByType('<%s> ...... CHECK OK' 
                                                 % myMayaEnvFile, 'l2')
         return True
     
     
-    def _isStandardAccount(self, userDocumentsPath):
+    def _isStandardAccount(self, currentAccount):
         """
         check the current account is a standrad account or not.
         
@@ -206,11 +260,10 @@ class EnvPrecheck(object):
         
         @return: boolean type
         """
-        isStandardAccount = False
-        for renderFarmAccount in self.STANDARD_ACCOUNTS:
-            if renderFarmAccount in userDocumentsPath:
-                isStandardAccount = True
-        return isStandardAccount
+        if currentAccount in self.STANDARD_ACCOUNTS:
+            return True
+        else:
+            return False
     
     
     def _copyAndBackupMayaEnvFile(self, myMayaEnvFile):
@@ -221,7 +274,7 @@ class EnvPrecheck(object):
         try:
             reName = myMayaEnvFile + '.bak'
             shutil.move(myMayaEnvFile, reName) 
-        except:
+        except Exception:
             self._writeIntoResultStringByType('backup maya env file error',
                                               'error')
             return False
@@ -235,29 +288,13 @@ class EnvPrecheck(object):
         """
         try:
             shutil.copy(self.MAYA_ENV_FILE[0], myMayaEnvFile)
-        except:
+        except Exception:
             self._writeIntoResultStringByType('copy maya env file error',
                                               'error')
             return False
         self._writeIntoResultStringByType('<%s> copy completed' % myMayaEnvFile,
                                           'warning')
         return True
-    
-    
-    def _getUserDocuments(self):
-        """
-        get user's documents:
-        Example: C:\Users\username\Documents
-        """
-        dll = ctypes.windll.shell32
-        buf = ctypes.create_unicode_buffer(MAX_PATH + 1)
-        if dll.SHGetSpecialFolderPathW(None, buf, 0x0005, False):
-            #print(buf.value)
-            return buf.value
-        else:
-            self._writeIntoResultStringByType('get user documents Failure!',
-                                              'error')
-            return None
     
     
     def _checkMayaShaveNodeFile(self):
@@ -292,7 +329,51 @@ class EnvPrecheck(object):
         self._writeIntoResultStringByType('-> check Plugin Folder On Server',
                                           'l1')
         return self._isExistAndOpenInList(self.PLUGIN_FOLDER)
-
+    
+    
+    def _isRenderHost(self, hostname):
+        """
+        judge this is render host or not
+        """
+        self._writeIntoResultStringByType('-> check the prefs dir',
+                                          'l1')
+        if re.match(self.HOSTNAME_RE, hostname.lower()):
+            return True
+        else:
+            self._writeIntoResultStringByType('<%s> is not Render computer'
+                                              % hostname, 'warning')
+            return False
+        
+    
+    def _removePrefs(self, mayaDocumentsPath):
+        """
+        remove the prefs directory in user documents.
+        """
+        prefsDir = os.path.join(mayaDocumentsPath, 'prefs')
+        if os.path.isdir(prefsDir):
+            backupPrefsDir = os.path.join(mayaDocumentsPath,
+                                          'prefs_backUp')
+            if os.path.isdir(backupPrefsDir):
+                try:
+                    shutil.rmtree(backupPrefsDir)
+                except Exception, e:
+                    print e
+                    return False
+            try:
+                os.rename(prefsDir, backupPrefsDir)
+            except Exception, e:
+                print e
+                return False
+            try:
+                os.makedirs(prefsDir)
+            except Exception, e:
+                print e
+                return False
+        
+        self._writeIntoResultStringByType('<%s> ...... REMOVE OK' % prefsDir,
+                                          'l2')
+        return True
+    
     
     def checkMayaFile(self, mayaFile):
         """ 
@@ -300,7 +381,7 @@ class EnvPrecheck(object):
         """
         if not self._checkMayaFile(mayaFile):
             self._writeIntoResultStringByType('<%s>MayaFileError' 
-                                        % mayaFile, 'error')
+                                              % mayaFile, 'error')
             return False
         
         return True

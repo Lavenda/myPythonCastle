@@ -6,8 +6,6 @@ Created on 2013-5-20
 
 @author: lavenda
 """
-#!/usr/bin/env python2.6
-# -*-coding:utf-8-*-
 
 from socket import *
 from time import sleep

@@ -1,6 +1,5 @@
-
 #!/usr/bin/env python2.6
-#-*- coding: utf-8 -*-
+#-*- coding:utf-8 -*-
 
 """
 Created on 2013-3-21
@@ -9,6 +8,7 @@ Created on 2013-3-21
 """
 
 import os
+import re
 from odwlib.lrc import baseLrcFileOper
 from odwlib.lrc import workFileData
 
@@ -16,8 +16,9 @@ class WorkFileFactory(object):
         
         
     VIDEO_EXT = ['.mov']
-    PICTURE_TEX = ['.exr', '.tif']
+    PICTURE_TEX = ['.exr', '.tif', '.tga']
     ILLEGAL_DIR = ['review', 'to_dw']
+    NAME_INFO_REG_EXP = '^.*([0-9]{2}).*([A-Z][0-9]{3}[a-z]?).*$'
     
     
     def __init__(self):
@@ -64,11 +65,25 @@ class WorkFileFactory(object):
         return fileExt
     
     
-    def isInDBAndGetStandardName(self, filePath):
+    def _getNameInfoByRE(self, string):
+        """
+        get the name info about the sequence and shot though the re
+        """
+        infoTuple = re.findall(self.NAME_INFO_REG_EXP, string)[0]
+        if len(infoTuple) == 2:
+            return infoTuple
+        else:
+            return None
+    
+    
+    def isInDBAndGetStandardName(self, fileName):
         """
         check this file is exist in the database or not.
         """
-        shotName = baseLrcFileOper.getShotName(filePath)
+        infoTuple = self._getNameInfoByRE(fileName)
+        sequence = infoTuple[0]
+        shot = infoTuple[1]
+        shotName = 'DRGN_2007_s%s_%s' % (sequence, shot)
         return self.shotCodeCaseDic.get(shotName.lower(), None)
     
     
@@ -102,6 +117,9 @@ class WorkFileFactory(object):
         get the Workfile object address dictionary
         """
         return self.workFileAddrDic
+    
+    def getDwIntegrateDir(self):
+        return workFileData.WorkFile.dwIntegrate
 
 
 if __name__ == '__main__':
