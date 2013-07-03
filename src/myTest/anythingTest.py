@@ -136,6 +136,76 @@ def osRenameTest():
     rmtreeResult = shutil.rmtree(tagPath)
     renameResult = os.rename(srcPath, tagPath)
     print rmtreeResult, renameResult
-
+    
+def subprocessPopenTest():
+    import subprocess
+    commandList = ['ping 192.168.16.4', 'net use', 'ping 192.168.16.4']
+    popen = subprocess.Popen(commandList, stdout=subprocess.PIPE)
+    print popen.stdout.read()
+    
+def exceptionTest():
+    try:
+        0/0
+    except Exception, e:
+        print type(e)
+        print isinstance(e, Exception)
+        
+def environTest():
+    import os
+    print os.environ
+    
+def subprocessPIPE():
+    import subprocess
+    print subprocess.PIPE
+    print subprocess.STDOUT
+    
+def readlineTest():
+    import time
+    path = r'S:\E020DW\DWep20\cache\alembic\toothless_saddle.abc'
+    fileStream = open(path, 'r')
+    a = fileStream.read()
+    print len(a)
+    time.sleep(10)
+    fileStream.close()
+    
+def upperDirTest():
+    import os
+    path = r'S:\E020DW\DWep20\cache\alembic\toothless_saddle.abc'
+    dirName = os.path.dirname(path)
+    upperDirName = os.path.basename(dirName)
+    print upperDirName
+    
+def joinTest():
+    import os
+    path = r'S:\E020DW\DWep20\cache\alembic'
+    dirName = None
+    fileName = 'abc.ma'
+    fullPath = os.path.join(path, dirName, fileName)
+    print fullPath
+    
+def nullStringTest():
+    string = ''
+    if string:
+        print True
+    print False
+    
+def listDeliverTest():
+    a = [1,2,3]
+    b = a
+    b.remove(1)
+    print a
+    
+def regTest():
+    import re
+    a = '\tsetAttr ".b" -type "string" "playbackOptions -min 100 -max 199 -ast 100 -aet 199 ";'
+    rel = re.findall(r'\tsetAttr.*"playbackOptions -min ([0-9]{2,3}) -max ([0-9]{2,3}) -as.*', a)
+    print rel
+    
+def getRefTest():
+    import re
+    import os
+    mayafilePath = r'C:\Users\huangchengqi\Desktop\7.2\DRGN_2015_S01_A001_LAY_V21.ma'
+    fileStream = open(mayafilePath, 'r')
+    
 if __name__ == '__main__':
-    osRenameTest()
+    regTest()

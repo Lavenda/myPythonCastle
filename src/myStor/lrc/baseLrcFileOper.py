@@ -26,16 +26,16 @@ def copyFile(srcPath, tagPath):
     """
     tagDirPath = os.path.dirname(tagPath)
     if not os.path.isfile(srcPath):
-        print '%s is not exist.' % srcPath
-        return False
+        msg = '%s is not exist.' % srcPath
+        print msg
+        return False, msg
     if not os.path.isdir(tagDirPath):
         os.makedirs(tagDirPath)
     try:
         shutil.copy(srcPath, tagPath)
-    except:
-        print 'copyFile Error'
-        return False
-    return True
+    except Exception, errorMsg:
+        return False, str(errorMsg)
+    return True, None
 
 
 
@@ -48,10 +48,10 @@ def removeFile(tagPath):
         return False
     try:
         os.remove(tagPath)
-    except:
-        print 'removeFile error'
-        return False
-    return True
+    except Exception, errorMsg:
+        print errorMsg
+        return False, errorMsg
+    return True, ''
 
 
 
@@ -64,25 +64,10 @@ def getSingleFrame(videoFilePath, tagFilePath):
     if fileExt == '.mov':
         try:
             isSuccess = rvio.getImageFromMov(inMov=videoFilePath, outImage=tagFilePath)
-        except Exception, e:
-            print e
-            return False
-    return isSuccess
-
-
-
-def getShotCodeCaseDic():
-    """
-    get a small case to big case dictionary from the database
-    """
-    from odwlib.tactic.server.biz import shotBiz 
-    shotBizObj = shotBiz.ShotBiz()
-    shotCodeList =  shotBizObj.getShotCodeList()
-    shotCodeCaseDic = {}
-    for shotCode in shotCodeList:
-        shotCodeCaseDic[shotCode.lower()] = shotCode
-    return shotCodeCaseDic
-
+        except Exception, errorMsg:
+            print errorMsg
+            return False, errorMsg
+    return isSuccess, ''
 
 
 def getShotName(srcPath):
@@ -118,7 +103,16 @@ def renameFile(rootPath, srcName, tagName):
         tagPath = srcPath.replace(srcName, tagName)
         try:
             shutil.move(srcPath, tagPath)
-        except Exception, e:
+        except Exception, errorMsg:
             print '<%s> is error' % srcPath
-            return e
+            return errorMsg
         return tagPath
+
+
+def getSubmitPersonName(fileName):
+    """
+    get a person name from a submit file
+    """
+    fileNameExceptExt = os.path.splitext(fileName)[0]
+    return fileNameExceptExt.split("_")[-1]
+

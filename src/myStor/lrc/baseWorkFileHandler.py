@@ -2,30 +2,42 @@
 #-*- coding:utf-8 -*-
 
 """
-Created on 2013-3-21
+Created on 2013-6-4
 
 @author: lavenda
 """
 
 import os
 import re
-from odwlib.lrc import baseLrcFileOper
 from odwlib.lrc import workFileData
+from odwlib.tactic.server.biz import shotBiz 
 
 class WorkFileFactory(object):
         
         
     VIDEO_EXT = ['.mov']
-    PICTURE_TEX = ['.exr', '.tif', '.tga']
+    PICTURE_TEX = ['.exr', '.tif', '.tga', '.jpg']
     ILLEGAL_DIR = ['review', 'to_dw']
-    NAME_INFO_REG_EXP = '^.*([0-9]{2}).*([A-Z][0-9]{3}[a-z]?).*$'
+    NAME_INFO_REG_EXP = '^.*[Ss]([0-9]{2}).*_([A-Z][0-9]{3}[a-z]?).*$'
     
     
     def __init__(self):
         self.workFileAddrDic = {}
         self.signName = ''
-        self.shotCodeCaseDic = baseLrcFileOper.getShotCodeCaseDic()
+        self.shotCodeCaseDic = self._getShotCodeCaseDic()
     
+
+    def _getShotCodeCaseDic(self):
+        """
+        get a small case to big case dictionary from the database
+        """
+        shotBizObj = shotBiz.ShotBiz()
+        shotCodeList =  shotBizObj.getShotCodeList()
+        shotCodeCaseDic = {}
+        for shotCode in shotCodeList:
+            shotCodeCaseDic[shotCode.lower()] = shotCode
+        return shotCodeCaseDic
+
     
     def createWorkFile(self, filePath):
         """
@@ -112,12 +124,14 @@ class WorkFileFactory(object):
         else:
             return False
     
+
     def getWorkFileAddrDic(self):
         """
         get the Workfile object address dictionary
         """
         return self.workFileAddrDic
     
+
     def getDwIntegrateDir(self):
         return workFileData.WorkFile.dwIntegrate
 

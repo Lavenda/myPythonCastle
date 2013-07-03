@@ -16,12 +16,19 @@ class WorkFile(object):
     
     namingSuffix = ''
     
-    sequenceDir = ('//server-cgi/qc/lighting/DW_approved'
+#    sequenceDir = ('//server-cgi/qc/lighting/DW_approved'
+#                       '/DRGN_2007/Sequence')
+#    singleFrameDir = ('//server-cgi/qc/lighting/DW_approved'
+#                          '/DRGN_2007/Single_Frame')
+#    dwIntegrate = ('//server-cgi/qc/lighting/DW_Integrate'
+#                   '/Single_Frame/frames/DRGN_2007')
+    sequenceDir = ('D:/test/qc/lighting/DW_approved'
                        '/DRGN_2007/Sequence')
-    singleFrameDir = ('//server-cgi/qc/lighting/DW_approved'
+    singleFrameDir = ('D:/test/qc/lighting/DW_approved'
                           '/DRGN_2007/Single_Frame')
-    dwIntegrate = ('//server-cgi/qc/lighting/DW_Integrate'
-                   '/Single_Frame/frames/DRGN_2007')
+    dwIntegrate = ('D:/test/qc/lighting/DW_Integrate'
+                    '/Single_Frame/frames/DRGN_2007')
+    PERSON_TO_ITSABBR = {}
     
     
     def __init__(self):
@@ -33,6 +40,9 @@ class WorkFile(object):
         self.filePath = ''
         self.dirPath = ''
         self.modifyTime = 0.0
+        self.submitPerson = ''
+        self.submitPersonAbbr = ''
+        self.fileStatus = ''
     
     
     def setFile(self, filePath):
@@ -48,8 +58,11 @@ class WorkFile(object):
         self.filePath = filePath
         self.dirPath = os.path.dirname(filePath)
         self.modifyTime = os.path.getmtime(filePath)
+        self.submitPerson = os.path.basename(self.dirPath)
+        self.submitPersonAbbr = self.PERSON_TO_ITSABBR.get(self.submitPerson, 
+                                                           '')
     
-    
+
     def setStandardName(self, standardName):
         """
         set the standardName and sequenceName attribute
@@ -57,6 +70,9 @@ class WorkFile(object):
         @param standardName: the standard name of the file
         @type standardName: string type
         """
+        self.integrateFileName = '%s%s_%s%s' % (standardName, self.namingSuffix, 
+                                                self.submitPersonAbbr, 
+                                                self.fileExt)
         self.standardName = standardName + self.namingSuffix + self.fileExt
         self.sequenceName = self.standardName.split('_')[2]
     
@@ -107,6 +123,31 @@ class WorkFile(object):
         pass
 
 
+    def _chooseDirToCopy(self):
+        """
+        choose a fitable path
+        """
+        dirName = 'IF'
+        tagPath = os.path.join(self.sequenceDir, dirName, self.standardName)
+        if (os.path.isfile(tagPath) and 
+            baseLrcFileOper.compareFiles(self.modifyTime, tagPath)):
+            self.fileStatus = 'IF'
+            return dirName
+        dirName = 'DW_approved'
+        tagPath = os.path.join(self.sequenceDir, dirName, self.standardName)
+        if (os.path.isfile(tagPath) and 
+            baseLrcFileOper.compareFiles(self.modifyTime, tagPath)):
+            self.fileStatus = 'Approved'
+            return dirName
+        dirName = 'pending'
+        tagPath = os.path.join(self.sequenceDir, dirName, self.standardName)
+        if (os.path.isfile(tagPath) and 
+                not baseLrcFileOper.compareFiles(self.modifyTime, tagPath)):
+            return None
+        return dirName
+
+
+
 
 class VideoFile(WorkFile):
     """
@@ -127,23 +168,30 @@ class VideoFile(WorkFile):
         if not (videoTagPath and pictureTagPath):
             return False, '-> this file is not the lastest version.'
         
-        if not baseLrcFileOper.copyFile(self.filePath, videoTagPath):
-            return False, '-> copy file error'
+        isCopySuccess, errorMsg = baseLrcFileOper.copyFile(self.filePath, 
+                                                           videoTagPath)
+        if not isCopySuccess:
+            return False, '-> %s' % errorMsg
         
         if self.hasFrameFile:
             return True, [videoTagPath]
         
-        if baseLrcFileOper.getSingleFrame(videoTagPath, pictureTagPath):
+        isGetSuccess, errorMsg = baseLrcFileOper.getSingleFrame(videoTagPath, 
+                                                                pictureTagPath)
+        
+        if isGetSuccess:
             pictureStandardName = os.path.basename(pictureTagPath)
             framesPath = os.path.join(self.dwIntegrate, self.sequenceName,
                                       pictureStandardName)
             
-            if not baseLrcFileOper.copyFile(pictureTagPath, framesPath):
-                return False, '-> copy file error' 
+            isCopySuccess, errorMsg = baseLrcFileOper.copyFile(pictureTagPath, 
+                                                               framesPath)
+            if not isCopySuccess:
+                return False, '-> %s' % errorMsg 
             
             return True, [videoTagPath, '->'+pictureTagPath, '->'+framesPath]
         else:
-            return False, '-> get Single Frame error'
+            return False, '-> %s' % errorMsg
     
     
     def _chooseAndCompareFile(self):
@@ -151,21 +199,12 @@ class VideoFile(WorkFile):
                                                     PictureFile.namingSuffix)
         pictureStandardName = pictureStandardName.replace(self.fileExt,
                                                           '.tga')
-        dirName = 'approved'
+        dirName = self._chooseDirToCopy()
+        if not dirName:
+            return None, None
         
         videoTagPath = os.path.join(self.sequenceDir, dirName, 
                                     self.standardName)
-        
-        if not (os.path.isfile(videoTagPath) and 
-                baseLrcFileOper.compareFiles(self.modifyTime, videoTagPath)):
-            dirName = 'pending'
-            videoTagPath = os.path.join(self.sequenceDir, dirName, 
-                                            self.standardName)
-            if (os.path.isfile(videoTagPath) and 
-                not baseLrcFileOper.compareFiles(self.modifyTime, 
-                                                 videoTagPath)):
-                return None, None
-            
         pictureTagPath = os.path.join(self.singleFrameDir, dirName, 
                                       pictureStandardName)
         return videoTagPath, pictureTagPath
@@ -191,6 +230,7 @@ class PictureFile(WorkFile):
     
     def __init__(self):
         WorkFile.__init__(self)
+        self.integrateFileName = ''
     
     
     def copyFiles(self, workFileAddrDic):
@@ -206,7 +246,7 @@ class PictureFile(WorkFile):
             
         dwIntegratePath = os.path.join(self.dwIntegrate, 
                                        self.sequenceName,
-                                       self.standardName)
+                                       self.fileName)
         resultTupleSecond = self._compareAndCopyFile(self.filePath, 
                                                       dwIntegratePath)
         if not resultTupleSecond[0]:
@@ -217,21 +257,14 @@ class PictureFile(WorkFile):
         
         
     def _chooseAndCompareFile(self):
-        dirName = 'approved'
+        dirName = self._chooseDirToCopy()
+        if not dirName:
+            return None
         pictureTagPath = os.path.join(self.singleFrameDir, dirName, 
-                                    self.standardName)
-        if not (os.path.isfile(pictureTagPath) and 
-                baseLrcFileOper.compareFiles(self.modifyTime, pictureTagPath)):
-            dirName = 'pending'
-            pictureTagPath = os.path.join(self.singleFrameDir, dirName, 
-                                          self.standardName)
-            if (os.path.isfile(pictureTagPath) and 
-                not baseLrcFileOper.compareFiles(self.modifyTime, 
-                                                 pictureTagPath)):
-                return None
+                                      self.standardName)
         return pictureTagPath
     
-        
+    
     def _compareAndCopyFile(self, srcPath, tagPathPlaned):
         fileExtList = ['.exr', '.tif', '.tga', '.jpg']
         tagFilePathList = []
@@ -248,15 +281,19 @@ class PictureFile(WorkFile):
                 continue
             
             if baseLrcFileOper.compareFiles(self.modifyTime, tagFilePath):
-                if baseLrcFileOper.removeFile(tagFilePath):
-                    return False, '-> remove file error'
+                isRemoveSuccess, errorMsg = baseLrcFileOper.removeFile(tagFilePath)
+                if not isRemoveSuccess:
+                    return False, '-> %s' % errorMsg
             else:
                 isLatter = False
                 
         if not isLatter:
             return False, '-> this file is not the lastest version.'
         
-        if baseLrcFileOper.copyFile(srcPath, tagPathPlaned):
+        isCopySuccess, errorMsg = baseLrcFileOper.copyFile(srcPath, 
+                                                           tagPathPlaned)
+
+        if isCopySuccess:
             return True, tagPathPlaned
         else:
-            return False, '-> copy file error'
+            return False, '-> %s' % errorMsg

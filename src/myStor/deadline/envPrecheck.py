@@ -25,6 +25,7 @@ class EnvPrecheck(object):
     SHAVENODE_FILE = [('C:/Program Files/JoeAlter/shaveHaircut/'
                        'maya2012/plug-ins/shaveNode.mll')]
     SOURCEIMAGE_FOLDER = ['//server-cgi/Project/E020DW/DWep20/sourceimages']
+    CACHE_FOLDER = ['//server-cgi/Project/E020DW/DWep20/cache/alembic']
     PLUGIN_FOLDER = ['//server-cgi/workflowtools_ep20']
     
     MAYA_VERSION = '2012-x64'
@@ -68,6 +69,10 @@ class EnvPrecheck(object):
             isAllRight = False
         if not self._checkMayaShaveNodeFile():
             self._writeIntoResultStringByType('ShaveNodeFileError', 
+                                              'error')
+            isAllRight = False
+        if not self._checkCacheFolderOnServer():
+            self._writeIntoResultStringByType('CacheFolderOnServerError', 
                                               'error')
             isAllRight = False
         if not self._checkSourceImagesOnServer():
@@ -305,17 +310,33 @@ class EnvPrecheck(object):
         return self._isExistAndOpenInList(self.SHAVENODE_FILE)
     
     
+    def _checkCacheFolderOnServer(self):
+        """
+        check whether the cache files is readable.
+        """
+        self._writeIntoResultStringByType('-> check Cache Folder On Server',
+                                          'l1')
+        return self.__checkFolderOnServer(self.CACHE_FOLDER)
+    
+    
     def _checkSourceImagesOnServer(self):
         """
         check whether the texture files is readable.
         """
         self._writeIntoResultStringByType('-> check Source Images On Server',
                                           'l1')
-        sourceimagesFolder = self._isExistAndOpenInList(self.SOURCEIMAGE_FOLDER)
-        if not sourceimagesFolder:
+        return self.__checkFolderOnServer(self.SOURCEIMAGE_FOLDER)
+    
+    
+    def __checkFolderOnServer(self, folderList):
+        """
+        check whether the folder list is readable. 
+        """
+        folderOnServer = self._isExistAndOpenInList(folderList)
+        if not folderOnServer:
             return False
-        for element in os.listdir(sourceimagesFolder):
-            elementPath = os.path.join(sourceimagesFolder, element)
+        for element in os.listdir(folderOnServer):
+            elementPath = os.path.join(folderOnServer, element)
             if not fileOper.isExistAndOpen(elementPath): 
                 return False
             

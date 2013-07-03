@@ -2,20 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-Created on 2013-6-5
+Created on 2013-6-20
 
 @author: lavenda
 """
 
-import sys
-
-sys.path.append(r'//server-cgi/workflowtools_ep20')
-sys.path.append(r'//server-cgi/workflowtools_ep20/lib')
-
 import os
 from odwlib.lrc import baseWorkFileHandler
 
-class LRCDirHandler(object):
+class BaseHandler(object):
     
     STANDARD_DIR_LIST = ['review', 'to_dw']
 
@@ -42,6 +37,7 @@ class LRCDirHandler(object):
         
         for rootDir, dirNameList, fileNameList in os.walk(localPath):
             
+
             if self._isStandardDir(rootDir):
                 isStandardDir = 1
             else:
@@ -66,7 +62,9 @@ class LRCDirHandler(object):
         unStandardObjList = self._printErrorPathAndGetIntoList(workFileObjList)
         
         if self._isStartRenameAndCopy():
-            self._handlerUnStandardObj(unStandardObjList)
+            handleSuccessList = self._handleUnStandardObj(unStandardObjList)
+            self._printList(handleSuccessList, 
+                            title='THESE FILES ARE HANDLED SUCCESS')
         
         self._printList(filePathNotInDBList, 
                         title='THESE FILES ARE NOT IN DATABASE')
@@ -77,7 +75,7 @@ class LRCDirHandler(object):
     
     def _isHandleReviewDir(self):
         """
-        handler all files or the files in standard dir
+        handle all files or the files in standard dir
         """
         self._printAndWrite('Do you want to handle the'
                             '[review,to_dw] directory?(yes/no):')
@@ -127,19 +125,11 @@ class LRCDirHandler(object):
             return False
 
 
-    def _handlerUnStandardObj(self, unStandardObjList):
+    def _handleUnStandardObj(self, unStandardObjList):
         """
         rename the unstandard file and copy them to a standard dir
         """
-        self._printAndWrite('what name suffix you want to add:')
-        nameSuffix = raw_input()
-        self._printAndWrite('\n\n*** IS REANMING THE FILES ***')
-        for workFileObj in unStandardObjList:
-            self._printAndWrite('----------------')
-            self._printAndWrite(workFileObj.filePath)
-            standardPath = workFileObj.renameFileName(nameSuffix)
-            if standardPath:
-                self._printAndWrite('-> ' + str(standardPath))
+        handleSuccessFileNameList = []
     
     
     def _printAndWrite(self, string):
@@ -149,9 +139,9 @@ class LRCDirHandler(object):
         print string
         try:
             self.fileStream.write(string+'\n')
-        except Exception, e:
+        except Exception, error:
             print 'write into the log error'
-            print e
+            print error
     
     
     def _printList(self, pathList, title):
@@ -164,15 +154,3 @@ class LRCDirHandler(object):
         for filePath in pathList:
             self._printAndWrite(filePath)
         self._printAndWrite('---------------------------------------------')
-
-
-def main(path):
-    """
-    the enterance of progarm
-    """
-    lrcDirHandler = LRCDirHandler()
-    lrcDirHandler.run(path)
-
-
-if __name__ == '__main__':
-   main(sys.argv[1])
