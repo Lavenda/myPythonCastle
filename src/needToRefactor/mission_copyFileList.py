@@ -150,9 +150,9 @@ obj = core()
 
 # Copy images
 SOURCE_FOLDER = r'W:\dragon_mstr'
-TARGET_FOLDER = r'S:\E008DW\Data_ from_DW\preAsset\20130703\sourceimages_noMap'
-ALL_FILE = r'C:\Users\huangchengqi\Desktop\drgn2015\noMapPath.txt'
-LOG_FILE = r'S:\E008DW\Data_ from_DW\preAsset\20130703\sourceimages_noMap\list_info.txt'
+TARGET_FOLDER = r'S:\E008DW\Data_ from_DW\preAsset\20130704\sourceimages_noMap'
+ALL_FILE = r'C:\Users\huangchengqi\Desktop\drgn2015\genericjim_aNoMap.txt'
+LOG_FILE = r'S:\E008DW\Data_ from_DW\preAsset\20130704\sourceimages_noMap\list_info.txt'
 obj.mode = 'images'
 
 # Copy ma 相对路径、无ver、无版本号

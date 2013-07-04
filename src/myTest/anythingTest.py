@@ -207,5 +207,11 @@ def getRefTest():
     mayafilePath = r'C:\Users\huangchengqi\Desktop\7.2\DRGN_2015_S01_A001_LAY_V21.ma'
     fileStream = open(mayafilePath, 'r')
     
+def douhaoTest():
+    import os
+    a = 'a'
+    b = 'b'
+    print os.path.join(a,b,)
+    
 if __name__ == '__main__':
-    regTest()
+    douhaoTest()

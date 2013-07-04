@@ -25,6 +25,7 @@ encoding//src/myTest/socket/socketClientTest.py=utf-8
 encoding//src/myTest/socket/socketSeverTest.py=utf-8
 encoding//src/myTest/socketServer/socketClientTest.py=utf-8
 encoding//src/myTest/socketServer/socketServerTest.py=utf-8
+encoding//src/needToRefactor/copyTree.py=utf-8
 encoding//src/needToRefactor/getFrame.py=utf-8
 encoding//src/needToRefactor/mission_copyFileList.py=utf-8
 encoding//src/needToRefactor/renameFile.py=utf-8

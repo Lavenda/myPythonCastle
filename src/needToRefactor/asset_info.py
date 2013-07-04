@@ -37,7 +37,7 @@ class Asset_Info():
     def get_info(self):
         asset_list = set()
         self.get_asset()
-        title_info = 'Asset\tPRX\tRIG_PRX\tRIG_HI\tTEX_HI\tCHRFX'
+        title_info = 'Asset\tPRX\tRIG_PRX\tRIG_HI\tTEX_HI\tCHRFX\tMSTR\tMIP'
         #print title_info
         #asset_list.add(title_info)
         
@@ -102,6 +102,9 @@ class Asset_Info():
                 elif x.endswith('_chrFX.ma'):
                     x_dir = x_dir.replace('chrFX','RIG')
                     x = x.replace('_chrFX.ma','_RIG_HI.ma')
+                elif x.endswith('_MIP.mi'):
+                    x_dir = x_dir.replace('MI','RIG')
+                    x = x.replace('_MIP.mi','_RIG_HI.ma')
                 else:
                     print 'error extension'
                     print x
@@ -136,13 +139,17 @@ class Asset_Info():
                 self.Assets_Info[x_no_ext]['MSTR'] = x.replace('RIG_HI','MSTR').replace('RIG','')
                 print 'MSTR:\t%s' % self.Assets_Info[x_no_ext]['MSTR']
                 
+                self.Assets_Info[x_no_ext]['MIP'] = x.replace('RIG_HI.ma','MIP.mi').replace('RIG','MI')
+                print 'MIP:\t%s' % self.Assets_Info[x_no_ext]['MIP']
                 
-                w = '%s\t%s\t%s\t%s\t%s\t%s\t%s' % (asset_path, self.exists(self.Assets_Info[x_no_ext]['PRX']),\
+                
+                w = '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (asset_path, self.exists(self.Assets_Info[x_no_ext]['PRX']),\
                                                 self.exists(self.Assets_Info[x_no_ext]['RIG_PRX']),\
                                             self.exists(self.Assets_Info[x_no_ext]['RIG_HI']),\
                                            self.exists(self.Assets_Info[x_no_ext]['TEX_HI']),\
                                            self.exists(self.Assets_Info[x_no_ext]['chrFX']),\
-                                           self.exists(self.Assets_Info[x_no_ext]['MSTR'])) 
+                                           self.exists(self.Assets_Info[x_no_ext]['MSTR']),\
+                                           self.exists(self.Assets_Info[x_no_ext]['MIP'])) 
                 print w
                 asset_list.add(w)
             
