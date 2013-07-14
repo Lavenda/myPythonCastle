@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LrcFileHandle</class>
+ <widget class="QMainWindow" name="LrcFileHandle">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>410</width>
+    <height>593</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>LrcFileHandle</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QTabWidget" name="lrcTab">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>371</width>
+      <height>531</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>qcFileHandleTab</string>
+     </attribute>
+     <widget class="QFrame" name="qcFileHandlerFrame">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>341</width>
+        <height>501</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QGroupBox" name="qcFileHandlerGB">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>321</width>
+         <height>491</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>QcFleHandler</string>
+       </property>
+       <widget class="QPushButton" name="srcFolderBtn">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>70</y>
+          <width>71</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Folder</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>211</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>FileInfo</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="scanBtn">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>110</y>
+          <width>71</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Scan</string>
+        </property>
+       </widget>
+       <widget class="QPlainTextEdit" name="srcPathTxt">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>301</width>
+          <height>31</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="isGenLogFile">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>360</y>
+          <width>91</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>isGenLogFile</string>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="logFileTxt">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>360</y>
+          <width>181</width>
+          <height>31</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="doneBtn">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>410</y>
+          <width>121</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Do</string>
+        </property>
+       </widget>
+       <widget class="QProgressBar" name="progressBar">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>460</y>
+          <width>151</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="value">
+         <number>24</number>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="ResultGB">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>160</y>
+          <width>301</width>
+          <height>181</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Result</string>
+        </property>
+        <widget class="QTextBrowser" name="textBrowser">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>281</width>
+           <height>151</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>RenameFiles</string>
+     </attribute>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>550</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>made by Lavenda</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>410</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuMenu1">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionTest"/>
+   </widget>
+   <widget class="QMenu" name="menuOper">
+    <property name="title">
+     <string>LRC</string>
+    </property>
+    <addaction name="actionFileTools"/>
+   </widget>
+   <addaction name="menuMenu1"/>
+   <addaction name="menuOper"/>
+  </widget>
+  <action name="actionTest">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionQcFleHandle">
+   <property name="text">
+    <string>QcFleHandle</string>
+   </property>
+  </action>
+  <action name="actionRenameAllFile">
+   <property name="text">
+    <string>RenameAllFile</string>
+   </property>
+  </action>
+  <action name="actionRunNukeBat">
+   <property name="text">
+    <string>RunNukeBat</string>
+   </property>
+  </action>
+  <action name="actionFileTools">
+   <property name="text">
+    <string>FileTools</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
