@@ -197,8 +197,8 @@ def listDeliverTest():
     
 def regTest():
     import re
-    a = '\tsetAttr ".b" -type "string" "playbackOptions -min 100 -max 199 -ast 100 -aet 199 ";'
-    rel = re.findall(r'\tsetAttr.*"playbackOptions -min ([0-9]{2,3}) -max ([0-9]{2,3}) -as.*', a)
+    a = '^\t{0,2}.*"([a-zA-Z_/$0-9:]*\.ma)";'
+    rel = re.findall(a, r'\t\t-shd "renderLayersByName" "s:/Dragon/_assets/env/landscape/berk/berk_peak_mid_cabbage_field_plowed_landscape/models/berk_peak_mid_cabbage_field_plowed_landscape_MSTR.ma";')
     print rel
     
 def getRefTest():
@@ -213,5 +213,10 @@ def douhaoTest():
     b = 'b'
     print os.path.join(a,b,)
     
+def stringAppendTest():
+    string = ''
+    string.append('a')
+    print string
+    
 if __name__ == '__main__':
-    douhaoTest()
+    stringAppendTest()

@@ -73,7 +73,7 @@ class core:
         
         total = len(lines)
         for index, line in enumerate(lines):
-#            print (total-index)
+            print (total-index)
 #            if not line.strip():
 #                continue
 #            
@@ -87,14 +87,15 @@ class core:
                 if not os.path.normcase(dir).endswith('models'):
                     dir = os.path.join(dir, 'ver')
                 ### ----------------------------------------------------
+                
                 ### Get Last version file ------------------------------
                 path = self.getFile(dir, file)
                 ### ----------------------------------------------------
-#            print path
+            print path
 
             if not os.path.exists(path):
                 lost += 1
-#                print 'No exists file:', path
+                print 'No exists file:', path
                 noExistsFileList.append('%s\n' % path_orig)
             elif not os.path.getsize(path):
                 zero += 1
@@ -106,23 +107,22 @@ class core:
                     try:
                         localDir = os.path.dirname(localPath)
                         if self.doCopy:
-                            ## Copy file --------------------
+                            ### Copy file --------------------
                             if not os.path.exists( localDir ):
-#                                os.makedirs(localDir)
-#                                print 'Make Dir:', localDir
-                                pass
-#                            shutil.copy2(path, localPath)
+                                os.makedirs(localDir)
+                                print 'Make Dir:', localDir
+                            shutil.copy2(path, localPath)
                             copied += 1
-                            print path
+                            print 'Copy file:', localPath
                             ### ------------------------------
                         
                     except:
                         noCopy += 1
                         failedCopyList.append('%s\n' % path_orig)
-#                        print 'Failed copy file:', path
+                        print 'Failed copy file:', path
                 else:
                     exists += 1
-#                    print 'Exists file:', localPath
+                    print 'Exists file:', localPath
 
         str = '\nTotal file: %s\nLost file: %s\nZero file: %s\n\nExists file: %s\nCopy file: %s\nFailed copy: %s' % (total, lost, zero, exists, copied, noCopy)
         print str
@@ -149,19 +149,18 @@ class core:
 obj = core()
 
 # Copy images
-#SOURCE_FOLDER = r'W:\dragon_mstr'
-#TARGET_FOLDER = r'S:\E008DW\Data_ from_DW\preAsset\20130704\sourceimages_noMap'
-#ALL_FILE = r'C:\Users\huangchengqi\Desktop\drgn2015\genericjim_aNoMap.txt'
-#LOG_FILE = r'S:\E008DW\Data_ from_DW\preAsset\20130704\sourceimages_noMap\list_info.txt'
+#SOURCE_FOLDER = r'W:\dragon_mstr\_assets'
+#TARGET_FOLDER = r'd:\E020DW\DWep20\sourceimages'
+#ALL_FILE = r'S:\E020DW\DWep20\sourceimages\list.txt'
+#LOG_FILE = r'S:\E020DW\DWep20\sourceimages\list_info.txt'
 #obj.mode = 'images'
 
 # Copy ma 相对路径、无ver、无版本号
-SOURCE_FOLDER = r'W:\dragon_mstr'
-#TARGET_FOLDER = r'D:\E008DW\Data_ from_DW\preAsset\20130703'
-TARGET_FOLDER = r'D:\E008DW'
-ALL_FILE = r'C:\Users\huangchengqi\Desktop\b\aaaa.txt'
-LOG_FILE = r'D:\E008DW\list_info.txt'
-obj.mode = 'ma'
+SOURCE_FOLDER = r'S:\E020DW\Data_ from_DW\daily\20130718\PKG - Asset Silver File Update\odw_update'
+TARGET_FOLDER = r'S:\E008DW\Data_ from_DW\preAsset\20130718'
+ALL_FILE = r'C:\Users\huangchengqi\Desktop\drgn2015\2015_RefFilePath.txt'
+LOG_FILE = r'S:\E008DW\Data_ from_DW\preAsset\20130718\list_info.txt'
+#obj.mode = 'ma'
 
 obj.doCopy = True
 obj.do()

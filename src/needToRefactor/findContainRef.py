@@ -6,6 +6,7 @@ Created on 2013-1-5
 '''
 
 import time, os, re
+import yaml
 
 
 class ReferenceFileData(object):
@@ -32,6 +33,26 @@ class FindContainReference(object):
     '''
     def __init__(self):
         self.allFilenameToItsAddress = {}   #AddressDictionary
+    
+    
+    def genAYamlFile(self, srcPath):
+        self.addAllFilePathsToAddressDictionary(srcPath)
+        self._genAYamlFile()
+    
+    def _genAYamlFile(self):
+        fileStream = open('D:/yamlTest.yaml', 'w')
+        for fileName, referenceFileData in self.allFilenameToItsAddress.items():
+#            print fileName
+            fileStream.write(yaml.dump(referenceFileData))
+            fileStream.write('---\n')
+#            fileStream.write(yaml.dump(str(referenceFileData)))
+#            fileStream.write(yaml.dump(str(referenceFileData.filename)))
+#            fileStream.write(yaml.dump(str(referenceFileData.filePath)))
+#            fileStream.write(yaml.dump(str(referenceFileData.topMayaFile)))
+#            fileStream.write(yaml.dump(str(referenceFileData.toReferenceFileDatas)))
+#            fileStream.write(yaml.dump(str(referenceFileData.beReferencedFileDatas)))
+#            fileStream.write(yaml.dump(str(referenceFileData.isExist)))
+        fileStream.close()
     
     
     def getGeneralTable(self, srcPath):
@@ -97,7 +118,7 @@ class FindContainReference(object):
     
     
     def _isSuitable(self, filename):
-        SUITABLE_FILE_EXTENSION = '_LAY.ma'
+        SUITABLE_FILE_EXTENSION = '.ma'
         if filename.endswith(SUITABLE_FILE_EXTENSION):
             return True
         else:
@@ -164,7 +185,6 @@ class FindContainReference(object):
             referenceFileData.isExist = False
             toReferenceFileDatas.pop()
         referenceFileData.toReferenceFileDatas = toReferenceFileDatas
-        
 #        if referenceFileData.filename =='boat_berkdinghy_SET.ma':
 #            print referenceFileData.isExist
 #            assert 1==2
@@ -191,7 +211,7 @@ class FindContainReference(object):
                     containReferenceFileDatas.append(containReferenceFileData)
             else:
                 containReferenceFileDatas.append(False)
-                print '<- %s' % upperReferenceFileData.filePath
+#                print '<- %s' % upperReferenceFileData.filePath
            
         return containReferenceFileDatas
     
@@ -204,15 +224,18 @@ class FindContainReference(object):
     
     
     def _replaceNonStandardFilePath(self, nonStandardFilePath):
-        NONSTANDARD_PATH_PREFIXS = ['S:/Dragon/_assets']
-#        NONSTANDARD_PATH_PREFIXS = ['S:/Dragon/_assets','$JOB_ASSETS','s:/Dragon/_assets']
+#        NONSTANDARD_PATH_PREFIXS = []
+#        NONSTANDARD_PATH_PREFIXS = ['$JOB_ASSETS']
+        NONSTANDARD_PATH_PREFIXS = ['S:/Dragon/_assets','$JOB_ASSETS','s:/Dragon/_assets','S:/dragon/_assets']
         STANDARD_RELATIVE_PATH_PREFIX = '_assets'
 #        STANDARD_ABSOLUTE_PATH_PREFIX = r'S:\E020DW\Data_ from_DW\preAsset\20130701a\_assets'
-        STANDARD_ABSOLUTE_PATH_PREFIX = 'S:/E020DW/DWep20/_assets'
+#        STANDARD_ABSOLUTE_PATH_PREFIX = 'S:/E020DW/DWep20/_assets'
+        STANDARD_ABSOLUTE_PATH_PREFIX = 'W:/dragon_mstr/_assets'
+#        standardFilePath = nonStandardFilePath
         for NONSTANDARD_PATH_PREFIX in NONSTANDARD_PATH_PREFIXS:
             if NONSTANDARD_PATH_PREFIX in nonStandardFilePath:
                 nonStandardFilePath = nonStandardFilePath.replace(NONSTANDARD_PATH_PREFIX, STANDARD_RELATIVE_PATH_PREFIX)
-            standardFilePath = nonStandardFilePath.replace(STANDARD_RELATIVE_PATH_PREFIX, STANDARD_ABSOLUTE_PATH_PREFIX)
+        standardFilePath = nonStandardFilePath.replace(STANDARD_RELATIVE_PATH_PREFIX, STANDARD_ABSOLUTE_PATH_PREFIX)
         return standardFilePath
     
     
@@ -265,7 +288,7 @@ class FindContainReference(object):
     
     
     def _compileWrittenTitleLine(self, allTopMayaFilePaths):
-        writtenTitleLine = 'CountOfContainReferenceFile\tFileName\tIsExist\t'
+        writtenTitleLine = 'CountOfContainReferenceFile\tbeReferencedFileDatas\tFileName\tIsExist\t'
         for allTopMayaFilePath in allTopMayaFilePaths:
             topMayaFilename = os.path.basename(allTopMayaFilePath)[10:18]
             writtenTitleLine = writtenTitleLine + '\t' + topMayaFilename
@@ -277,8 +300,9 @@ class FindContainReference(object):
         filename = referenceFileData.filename
         filePath = referenceFileData.filePath
         isExist = referenceFileData.isExist
+        beReferencedFileDatas = self._delLayoutFile(referenceFileData.beReferencedFileDatas)
         countOfContainReferenceFile = self._getCountOfContainReferenceFile(filename)
-        writtenLine = str(countOfContainReferenceFile) + '\t' + filename + '\t' + str(isExist) + '\t'
+        writtenLine = str(countOfContainReferenceFile) + '\t' + str(beReferencedFileDatas) + '\t' + filename + '\t' + str(isExist) + '\t'
         containTopMayaFiles = referenceFileData.topMayaFile
         for allTopMayaFilePath in allTopMayaFilePaths:
             topMayaFilename = os.path.basename(allTopMayaFilePath)
@@ -292,6 +316,16 @@ class FindContainReference(object):
         return writtenLine
     
     
+    def _delLayoutFile(self, beReferencedFileDatas):
+        noLayoutFilenameList = []
+        for beReferencedFileData in beReferencedFileDatas:
+            filename = beReferencedFileData.filename
+            if '_lay_' in filename.lower():
+                continue
+            noLayoutFilenameList.append(filename)
+        return noLayoutFilenameList
+    
+    
     def _getCountOfContainReferenceFile(self, filename):
         referenceFileData = self.allFilenameToItsAddress[filename]
         countOfContainReferenceFile = len(referenceFileData.toReferenceFileDatas)
@@ -302,5 +336,6 @@ if __name__ == '__main__' :
     findContainReference = FindContainReference()
 #    findContainReference.getGeneralTable(r'C:\Users\huangchengqi\Desktop\unStandardInS')
 #    findContainReference.getGeneralTable(r'S:\E020DW\DWep20\_episodes\drgn_2015\s10\DRGN_2015_s10_A102\Scenes\LAY')
-    findContainReference.getGeneralTable(r'S:\E020DW\DWep20\_episodes\drgn_2015')
+#    findContainReference.genAYamlFile(r'S:\E020DW\DWep20\_episodes\drgn_2015')
+    findContainReference.getGeneralTable(r'C:\Users\huangchengqi\Desktop\b')
 #    findContainReference.findAllFileReferenceThisFile('stalactite_double_MDL.ma',r'C:\Users\huangchengqi\Desktop\ma')
